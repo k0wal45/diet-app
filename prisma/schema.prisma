@@ -1,5 +1,3 @@
-// schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,26 +6,28 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  password  String 
-  clients   Client[]
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  name     String
+  password String 
+  clients  Client[]
 }
 
 model Client {
-  id         Int      @id @default(autoincrement())
-  name       String
-  email      String?  @unique
-  age        Int?
-  weight     Float?
-  height     Float?
-  sex        enum Sex {
-    Male
-    Female
-  }
-  createdBy  Int
-  user       User     @relation(fields: [createdBy], references: [id])
+  id        Int     @id @default(autoincrement())
+  name      String
+  email     String? @unique
+  age       Int?
+  weight    Float?
+  height    Float?
+  sex       Sex
+  createdBy Int
+  user      User    @relation(fields: [createdBy], references: [id])
 }
 
+enum Sex {
+  Male
+  Female
+}

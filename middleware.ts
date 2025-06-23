@@ -5,7 +5,7 @@ import { jwtVerify } from "jose";
 const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith("/login")) {
+  if (request.nextUrl.pathname.startsWith("/")) {
     // If the request is for the login page, allow it to pass through
     return NextResponse.next();
   }

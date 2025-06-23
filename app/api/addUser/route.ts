@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
-// In API route or server action
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
@@ -8,19 +7,23 @@ export async function POST(req: NextRequest) {
 
   console.log("Received user data:", user);
 
+  if (!user.email || !user.name || !user.password) {
+    return NextResponse.json("Missing required fields", {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
+  const hashedPassword = user.password; // Replace with actual hashing logic
+
   const newUser = await prisma.user.create({
     data: {
-      email: "anna@example.com",
-      name: "Anna",
-      meals: {
-        create: [
-          { name: "Breakfast", calories: 300 },
-          { name: "Lunch", calories: 500 },
-        ],
-      },
-    },
-    include: {
-      meals: true,
+      email: user.email,
+      name: user.name,
+      password: hashedPassword,
+      clients: [],
     },
   });
 
