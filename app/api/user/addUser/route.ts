@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
   const user = await req.json();
 
-  console.log("Received user data:", user);
-
-  if (!user.email || !user.name || !user.password) {
-    return NextResponse.json("Missing required fields", {
+  if (!user.email || !user.name || !user.password || !user.role) {
+    return NextResponse.json("Email, name, role and password are required", {
       status: 400,
       headers: {
         "Content-Type": "application/json",
@@ -16,14 +15,28 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const hashedPassword = user.password; // Replace with actual hashing logic
+  const saltRounds = Number(process.env.HASH_SALT);
+  if (!saltRounds || isNaN(saltRounds)) {
+    return NextResponse.json(
+      "Server configuration error: HASH_SALT is not set or not a number",
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+  const salt = await bcrypt.genSalt(saltRounds);
+
+  const hashedPassword = await bcrypt.hash(user.password, salt);
 
   const newUser = await prisma.user.create({
     data: {
       email: user.email,
       name: user.name,
+      role: user.role,
       password: hashedPassword,
-      clients: [],
     },
   });
 

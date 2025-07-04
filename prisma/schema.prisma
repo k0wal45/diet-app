@@ -11,7 +11,8 @@ model User {
   id       Int      @id @default(autoincrement())
   email    String   @unique
   name     String
-  password String 
+  password String
+  role     UserRole
   clients  Client[]
 }
 
@@ -24,10 +25,86 @@ model Client {
   height    Float?
   sex       Sex
   createdBy Int
-  user      User    @relation(fields: [createdBy], references: [id])
+  trainer   User    @relation(fields: [createdBy], references: [id])
+  diets     Diet[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  protein     Float
+  fat         Float
+  carbs       Float
+  kcal        Float
+  unit        Unit
+  createdAt   DateTime  @default(now())
+ 
+  mealProducts MealProduct[]
+}
+
+model Meal {
+  id           Int           @id @default(autoincrement())
+  name         String
+  description  String?
+  kcal         Float
+  protein      Float
+  fat          Float
+  carbs        Float
+  createdAt    DateTime      @default(now())
+
+  mealProducts MealProduct[]
+  dietMeals    DietMeal[]
+}
+
+model MealProduct {
+  id         Int      @id @default(autoincrement())
+  mealId     Int
+  productId  Int
+  quantity   Float     // np. 150g
+
+  meal       Meal      @relation(fields: [mealId], references: [id])
+  product    Product   @relation(fields: [productId], references: [id])
+}
+
+model Diet {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String?
+  saved       Boolean     @default(false)
+  kcal        Float
+  protein     Float
+  fat         Float
+  carbs       Float
+  createdAt   DateTime    @default(now())
+
+  clientId    Int?
+  client      Client?     @relation(fields: [clientId], references: [id])
+  dietMeals   DietMeal[]
+}
+
+model DietMeal {
+  id        Int   @id @default(autoincrement())
+  dietId    Int
+  mealId    Int
+
+  diet      Diet  @relation(fields: [dietId], references: [id])
+  meal      Meal  @relation(fields: [mealId], references: [id])
 }
 
 enum Sex {
   Male
   Female
+}
+
+enum UserRole {
+  admin
+  dietician
+  user
+}
+
+enum Unit {
+  g 
+  ml 
+  slice
 }
