@@ -4,7 +4,6 @@ import "./globals.css";
 
 const font = Urbanist({
   subsets: ["latin"],
-  variable: "--font-urbanist",
 });
 
 export const metadata: Metadata = {
@@ -19,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={font.variable}>{children}</body>
+      <body className={font.className}>{children}</body>
     </html>
   );
 }

@@ -5,10 +5,6 @@ import { jwtVerify } from "jose";
 const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith("/")) {
-    // If the request is for the login page, allow it to pass through
-    return NextResponse.next();
-  }
   const token = request.cookies.get("token")?.value;
 
   if (!token) {
@@ -34,3 +30,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 }
+
+export const config = {
+  matcher: ["/app/:path*"],
+};

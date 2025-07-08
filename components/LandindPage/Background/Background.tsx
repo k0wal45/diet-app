@@ -1,29 +1,86 @@
-";use client";
-import React, { useEffect, useState } from "react";
+"use client";
+import React, { useEffect, useRef, useState } from "react";
 import "./background.css";
 import Blob from "./Blob/Blob";
 
-const Background = () => {
-  const [width, setWidth] = useState(Math.floor(window.innerWidth / 15));
-  const [rows, setRows] = useState(Math.floor(window.innerHeight / width) + 2);
-  const [highlithed, setHighlighted] = useState([1, 4, 7, 10, 13]);
+type Square = [number, number];
 
-  console.log("Width:", width);
-  console.log("Rows:", rows);
+const squareKey = (square: Square) => `${square[0]}-${square[1]}`;
+
+const Background = () => {
+  const [cols, setCols] = useState(0);
+  const [rows, setRows] = useState(0);
+  const [highlighted, setHighlighted] = useState<Square[]>([
+    [1, 2],
+    [7, 4],
+    [3, 5],
+    [12, 6],
+    [11, 5],
+    [14, 8],
+    [3, 3],
+    [5, 1],
+  ]);
+  const [fadingOut, setFadingOut] = useState<Square[]>([]);
+  const [fadingIn, setFadingIn] = useState<Square[]>([]);
+
+  const prevHighlighted = useRef<Square[]>(highlighted);
 
   useEffect(() => {
-    const handleResize: () => void = () => {
-      setWidth(Math.floor(window.innerWidth / 15));
-      setRows(Math.floor(window.innerHeight / width) + 2);
+    const updateSize = () => {
+      setCols(Math.floor(window.innerWidth / (8 * 16)));
+      setRows(Math.floor(window.innerHeight / (8 * 16)));
+    };
+
+    updateSize();
+
+    const handleResize = () => {
+      setCols(Math.floor(window.innerWidth / (8 * 16)));
+      setRows(Math.floor(window.innerHeight / (8 * 16)));
     };
 
     window.addEventListener("resize", handleResize);
 
-    // Cleanup the event listener on component unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [width]);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHighlighted((prev) => {
+        const newHighlighted = [...prev];
+        const removed = newHighlighted.pop()!;
+
+        const randomSquare: Square = [
+          Math.floor(Math.random() * cols),
+          Math.floor(Math.random() * rows),
+        ];
+
+        if (
+          newHighlighted.some((s) => squareKey(s) === squareKey(randomSquare))
+        ) {
+          // If the random square is the same as the removed one, generate a new one
+          randomSquare[0] = (randomSquare[0] + 1) % cols;
+          randomSquare[1] = (randomSquare[1] + 1) % rows;
+        }
+
+        newHighlighted.unshift(randomSquare);
+
+        // Find which square was removed and which was added
+        setFadingOut([removed]);
+        setFadingIn([randomSquare]);
+
+        // Remove fade-out after animation
+        setTimeout(() => setFadingOut([]), 500); // adjust to your fade-out duration
+        setTimeout(() => setFadingIn([]), 500); // adjust to your fade-in duration
+
+        prevHighlighted.current = newHighlighted;
+        return newHighlighted;
+      });
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [cols, rows]);
 
   return (
     <div className="w-full h-full absolute top-0 left-0 z-[-1] bg-background max-w-screen overflow-hidden">
@@ -42,14 +99,39 @@ const Background = () => {
         <Blob />
       </div>
 
-      <div className="absolute top-0 left-0 w-full h-full">
-        {Array.from({ length: rows }).map((_, rowIndex) => (
-          <div key={rowIndex} className="grid grid-cols-15 w-full">
-            {Array.from({ length: 15 }).map((_, colIndex) => (
-              <div key={colIndex} className={`square`}></div>
-            ))}
-          </div>
-        ))}
+      <div className="absolute top-0 left-0 w-full h-full background-grid">
+        <div className="relative w-full h-full">
+          {highlighted.map((square) => {
+            const key = squareKey(square);
+            let fadeClass = "";
+            if (fadingIn.some((s) => squareKey(s) === key)) {
+              fadeClass = "fade-in";
+            }
+            return (
+              <div
+                key={key}
+                className={`absolute w-[8rem] h-[8rem] bg-neutral-200/10 ${fadeClass}`}
+                style={{
+                  top: 8 * square[1] + "rem",
+                  left: 8 * square[0] + "rem",
+                }}
+              ></div>
+            );
+          })}
+          {fadingOut.map((square) => {
+            const key = squareKey(square);
+            return (
+              <div
+                key={key}
+                className="absolute w-[8rem] h-[8rem] bg-neutral-200/10 fade-out"
+                style={{
+                  top: 8 * square[1] + "rem",
+                  left: 8 * square[0] + "rem",
+                }}
+              ></div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

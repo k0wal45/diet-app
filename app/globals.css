@@ -5,3 +5,8 @@
   --color-secondary: #d2f801;
   --color-background: #0f2028;
 }
+
+html,
+body {
+  scroll-behavior: smooth;
+}
