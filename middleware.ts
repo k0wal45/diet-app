@@ -15,16 +15,25 @@ export async function middleware(request: NextRequest) {
 
   try {
     // Verify the token
-    const valid = await jwtVerify(token, secret);
+    const valid = await jwtVerify(token, secret, {
+      algorithms: ["HS256"],
+    });
 
     if (!valid) {
       throw new Error("Token verification failed");
     }
 
-    // Clone the request and add the Authorization header
-    const response = NextResponse.next();
-    response.headers.set("Authorization", `Bearer ${token}`);
-    return response;
+    if (valid.payload.exp && Date.now() >= valid.payload.exp * 1000) {
+      console.log("Token has expired, redirecting to login.");
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    if (!valid.payload.role || !valid.payload.id) {
+      console.log("Token payload is missing role or id, redirecting to login.");
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    return NextResponse.next();
   } catch {
     console.log("Token verification failed, redirecting to login.");
     return NextResponse.redirect(new URL("/login", request.url));

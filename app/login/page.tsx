@@ -3,9 +3,9 @@ import React from "react";
 
 const page = () => {
   return (
-    <div className="bg-red-200">
+    <main className="w-full h-screen flex items-center justify-center">
       <Login />
-    </div>
+    </main>
   );
 };
 

@@ -56,12 +56,12 @@ const Background = () => {
           Math.floor(Math.random() * rows),
         ];
 
-        if (
+        while (
           newHighlighted.some((s) => squareKey(s) === squareKey(randomSquare))
         ) {
-          // If the random square is the same as the removed one, generate a new one
-          randomSquare[0] = (randomSquare[0] + 1) % cols;
-          randomSquare[1] = (randomSquare[1] + 1) % rows;
+          // Ensure the new square is not already highlighted
+          randomSquare[0] = Math.floor(Math.random() * cols);
+          randomSquare[1] = Math.floor(Math.random() * rows);
         }
 
         newHighlighted.unshift(randomSquare);

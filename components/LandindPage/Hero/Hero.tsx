@@ -21,7 +21,7 @@ const Hero = () => {
           Apliakcja do tworzenia diet, która ułatwia planowanie posiłków i
           zarządzanie nimi
         </p>
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center justify-center mt-8">
           <Link
             href="/app"
             className="px-6 py-3 bg-primary text-white rounded-full hover:bg-secondary hover:text-black transition"

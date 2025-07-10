@@ -33,6 +33,7 @@ model Product {
   id          Int      @id @default(autoincrement())
   name        String
   description String?
+  category    ProductCategory
   protein     Float
   fat         Float
   carbs       Float
@@ -93,18 +94,34 @@ model DietMeal {
 }
 
 enum Sex {
-  Male
-  Female
+  MALE
+  FEMALE
 }
 
 enum UserRole {
-  admin
-  dietician
-  user
+  ADMIN
+  DIETICIAN
+  USER
 }
 
 enum Unit {
-  g 
-  ml 
-  slice
+  G 
+  ML 
+  SLICE
+}
+
+enum ProductCategory {
+  MEAT
+  FISH
+  DAIRY
+  FRUITS
+  VEGETABLES
+  BREAD
+  COOKING
+  LEGUMES
+  SPICES
+  GRAINS
+  GREENS
+  OTHER
+  SUPPLEMENTS
 }
