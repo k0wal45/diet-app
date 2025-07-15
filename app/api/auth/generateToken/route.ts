@@ -10,21 +10,17 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json(); // Parse the request body as JSON
 
-    const { preParsedEmail, password } = body;
+    const { email, password } = body;
 
-    const email = preParsedEmail.trim().toLowerCase(); // Normalize email input
-
-    console.log("Received credentials:", { email, password });
+    const ParsedEmail = email.trim().toLowerCase(); // Normalize email input
 
     // Query to check username or email from the decoded token
     const user = await prisma.user.findUnique({
       where: {
-        email: email,
+        email: ParsedEmail,
       },
     });
     // Execute the query to find the user
-
-    console.log("User found:", user);
 
     if (!user) {
       return NextResponse.json({
@@ -50,7 +46,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Validate the credentials (this is just an example, replace with your logic)
-    if (user.email === email && isMatch) {
+    if (user.email === ParsedEmail && isMatch) {
       // Generate a JWT
       const token = jwt.sign({ role: user.role, id: user.id }, SECRET_KEY, {
         expiresIn: "1h",

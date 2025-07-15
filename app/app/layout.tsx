@@ -6,7 +6,7 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="relative">
+    <main className="relative flex">
       <Navigation />
       {children}
     </main>
