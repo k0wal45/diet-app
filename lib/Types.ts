@@ -1,37 +1,25 @@
 // types.ts
 
-export enum Sex {
-  MALE = "MALE",
-  FEMALE = "FEMALE",
-}
+export type Sex = "MALE" | "FEMALE";
 
-export enum UserRole {
-  ADMIN = "ADMIN",
-  DIETICIAN = "DIETICIAN",
-  USER = "USER",
-}
+export type UserRole = "ADMIN" | "DIETICIAN" | "USER";
 
-export enum Unit {
-  G = "G",
-  ML = "ML",
-  SLICE = "SLICE",
-}
+export type Unit = "G" | "ML" | "SLICE";
 
-export enum ProductCategory {
-  MEAT = "MEAT",
-  FISH = "FISH",
-  DAIRY = "DAIRY",
-  FRUITS = "FRUITS",
-  VEGETABLES = "VEGETABLES",
-  BREAD = "BREAD",
-  COOKING = "COOKING",
-  LEGUMES = "LEGUMES",
-  SPICES = "SPICES",
-  GRAINS = "GRAINS",
-  GREENS = "GREENS",
-  OTHER = "OTHER",
-  SUPPLEMENTS = "SUPPLEMENTS",
-}
+export type ProductCategory =
+  | "MEAT"
+  | "FISH"
+  | "DAIRY"
+  | "FRUITS"
+  | "VEGETABLES"
+  | "BREAD"
+  | "COOKING"
+  | "LEGUMES"
+  | "SPICES"
+  | "GRAINS"
+  | "GREENS"
+  | "OTHER"
+  | "SUPPLEMENTS";
 
 // Model: User
 export interface User {
@@ -47,10 +35,10 @@ export interface User {
 export interface Client {
   id: number;
   name: string;
-  email?: string | null;
-  age?: number | null;
-  weight?: number | null;
-  height?: number | null;
+  email?: string | undefined;
+  age?: number | undefined;
+  weight?: number | undefined;
+  height?: number | undefined;
   sex: Sex;
   createdBy: number;
   trainer?: User;

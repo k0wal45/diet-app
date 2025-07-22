@@ -1,12 +1,7 @@
 import React from "react";
-import AddUserButton from "../user/addUserButton";
 
 const HowToUse = () => {
-  return (
-    <section className="">
-      <AddUserButton />
-    </section>
-  );
+  return <section className="">How to use</section>;
 };
 
 export default HowToUse;
