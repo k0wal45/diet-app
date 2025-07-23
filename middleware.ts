@@ -8,8 +8,6 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
 
   if (!token) {
-    console.log("No token found, redirecting to login.");
-
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
@@ -32,8 +30,9 @@ export async function middleware(request: NextRequest) {
       console.log("Token payload is missing role or id, redirecting to login.");
       return NextResponse.redirect(new URL("/login", request.url));
     }
-
-    return NextResponse.next();
+    const response = NextResponse.next();
+    response.headers.set("Authorization", `Bearer ${token}`);
+    return response;
   } catch {
     console.log("Token verification failed, redirecting to login.");
     return NextResponse.redirect(new URL("/login", request.url));
@@ -41,5 +40,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/app/:path*"],
+  matcher: ["/app/:path*", "/api/:path*"],
 };
