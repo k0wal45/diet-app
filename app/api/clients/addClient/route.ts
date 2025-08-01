@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkValidToken } from "@/lib/checkValidToken";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
   const isValid = await checkValidToken(req);
-  console.log(isValid);
   if (!isValid) {
     return NextResponse.json({
       success: false,
@@ -13,9 +13,9 @@ export async function POST(req: NextRequest) {
   // If the token is valid, proceed with the request
   const body = await req.json();
 
-  const { name, email, age, weight, height, sex } = body;
+  const { name, email, age, weight, height, sex, trainerId } = body;
 
-  if (!name && !email && !age && !weight && !height && !sex) {
+  if (!name && !email && !age && !weight && !height && !sex && !trainerId) {
     return NextResponse.json({
       status: 400,
       headers: {
@@ -23,6 +23,22 @@ export async function POST(req: NextRequest) {
       },
     });
   }
+
+  console.log(body);
+
+  const newClient = await prisma.client.create({
+    data: {
+      name,
+      email,
+      age: parseInt(age),
+      weight: parseInt(weight),
+      height: parseInt(weight),
+      sex,
+      createdBy: trainerId,
+    },
+  });
+
+  console.log("New client created: ", newClient);
 
   return NextResponse.json({
     status: 200,

@@ -33,7 +33,13 @@ const Navigation = () => {
   }
 
   return (
-    <nav className="sticky top-0 left-0 h-screen p-4 bg-neutral-300 flex flex-col w-56 gap-6">
+    <nav
+      className="sticky top-0 left-0 h-screen p-4 bg-neutral-300 flex flex-col w-56 gap-6 overflow-y-scroll"
+      style={{
+        scrollbarWidth: "thin",
+        scrollbarColor: "#a3a3a3 #e5e5e5",
+      }}
+    >
       <div className="flex gap-4 items-center justify-center">
         <Image
           src="/logo.svg"

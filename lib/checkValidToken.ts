@@ -5,8 +5,6 @@ export async function checkValidToken(req: NextRequest) {
   const authHeader = req.headers.get("Authorization");
   const token = authHeader && authHeader.split(" ")[1];
 
-  console.log(authHeader);
-
   if (!token) {
     return false;
   }

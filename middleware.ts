@@ -7,6 +7,13 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
 
+  // Extract pathname from the URL
+  const { pathname } = new URL(request.url);
+
+  if (pathname === "/api/auth/generateToken") {
+    return NextResponse.next();
+  }
+
   if (!token) {
     return NextResponse.redirect(new URL("/login", request.url));
   }

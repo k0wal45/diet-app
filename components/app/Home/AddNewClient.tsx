@@ -1,4 +1,5 @@
 "use client";
+import { useUser } from "@/hooks/useUser";
 import { Client } from "@/lib/Types";
 
 import React, { useState } from "react";
@@ -13,18 +14,22 @@ const AddNewClient = () => {
     height: undefined,
     sex: "MALE",
   });
+  const user = useUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted with data:", formData);
     setLoading(true);
     try {
+      if (!user.user) {
+        throw new Error("User authentication error: " + user.error);
+      }
+      const trainerId = user.user.id;
       const response = await fetch("/api/clients/addClient", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, trainerId }),
       });
       if (!response.ok) {
         throw new Error("Failed to add client");
@@ -36,15 +41,14 @@ const AddNewClient = () => {
       setLoading(false);
       return;
     }
-    console.log(formData);
-    // setFormData({
-    //   name: "",
-    //   email: "",
-    //   age: undefined,
-    //   weight: undefined,
-    //   height: undefined,
-    //   sex: "MALE",
-    // });
+    setFormData({
+      name: "",
+      email: "",
+      age: undefined,
+      weight: undefined,
+      height: undefined,
+      sex: "MALE",
+    });
     setLoading(false);
   };
 
