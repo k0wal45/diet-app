@@ -7,26 +7,10 @@ import { FaArrowRightFromBracket, FaGear } from "react-icons/fa6";
 import { GiHotMeal } from "react-icons/gi";
 import { PiGridFour } from "react-icons/pi";
 import { TbMeat } from "react-icons/tb";
+import { signOut } from "@/lib/signOut";
 
 const Navigation = () => {
   const { user, loading, error } = useUser();
-
-  const signOut = async () => {
-    try {
-      const response = await fetch("/api/auth/signout", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        window.location.href = "/"; // Redirect to home page after sign out
-      } else {
-        console.error("Failed to sign out");
-      }
-    } catch (error) {
-      console.error("Error during sign out:", error);
-    }
-  };
 
   function firstLetterCapital(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();

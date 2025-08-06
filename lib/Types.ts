@@ -35,10 +35,10 @@ export interface User {
 export interface Client {
   id: number;
   name: string;
-  email?: string | undefined;
-  age?: number | undefined;
-  weight?: number | undefined;
-  height?: number | undefined;
+  email?: string | null;
+  age?: number | null;
+  weight?: number | null;
+  height?: number | null;
   sex: Sex;
   createdBy: number;
   trainer?: User;

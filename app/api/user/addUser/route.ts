@@ -2,8 +2,17 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { checkValidToken } from "@/lib/checkValidToken";
 
 export async function POST(req: NextRequest) {
+  const isValid = await checkValidToken(req);
+  if (!isValid) {
+    return NextResponse.json({
+      success: false,
+      body: "Invalid token",
+    });
+  }
+
   const user = await req.json();
 
   if (!user.email || !user.name || !user.password || !user.role) {

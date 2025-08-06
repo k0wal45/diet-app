@@ -1,5 +1,6 @@
 "use client";
 import AddNewClient from "@/components/app/Home/AddNewClient";
+import YourClients from "@/components/app/Home/YourClients/YourClients";
 import { useUser } from "@/hooks/useUser";
 import React from "react";
 
@@ -15,6 +16,7 @@ const Page = () => {
         <p className="text-thin">Track your clients diets and manage details</p>
       </div>
       <AddNewClient />
+      <YourClients />
     </section>
   );
 };

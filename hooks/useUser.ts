@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
+import { User } from "@/lib/Types"; // Use shared type for consistency
 
-type User = {
-  id: string;
-  email: string;
-  role: string;
-  name?: string;
-};
+export const LOCAL_STORAGE_KEY = "diet-app-user";
 
 export function useUser() {
   const [user, setUser] = useState<User | null>(null);
@@ -14,6 +10,25 @@ export function useUser() {
 
   useEffect(() => {
     const fetchUser = async () => {
+      // 1. Try to get user from localStorage
+      const localUser =
+        typeof window !== "undefined"
+          ? localStorage.getItem(LOCAL_STORAGE_KEY)
+          : null;
+
+      if (localUser) {
+        try {
+          const parsedUser = JSON.parse(localUser) as User;
+          setUser(parsedUser);
+          setLoading(false);
+          return;
+        } catch {
+          // If parsing fails, clear localStorage and continue to fetch
+          localStorage.removeItem(LOCAL_STORAGE_KEY);
+        }
+      }
+
+      // 2. Fetch user from API if not in localStorage
       try {
         const res = await fetch("/api/auth/getUserData", {
           method: "GET",
@@ -26,6 +41,10 @@ export function useUser() {
 
         const data = await res.json();
         setUser(data.user);
+        // Save to localStorage
+        if (typeof window !== "undefined") {
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data.user));
+        }
       } catch (err: unknown) {
         setUser(null);
         if (
@@ -37,6 +56,10 @@ export function useUser() {
           setError((err as { message: string }).message);
         } else {
           setError("Failed to fetch user");
+        }
+        // Remove possibly invalid user from localStorage
+        if (typeof window !== "undefined") {
+          localStorage.removeItem(LOCAL_STORAGE_KEY);
         }
       } finally {
         setLoading(false);
