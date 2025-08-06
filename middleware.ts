@@ -38,7 +38,16 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
     const response = NextResponse.next();
-    response.headers.set("Authorization", `Bearer ${token}`);
+    if (pathname.startsWith("/api")) {
+      response.headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    if (pathname.startsWith("/app/admin/")) {
+      if (valid.payload.role === "ADMIN") {
+        return response;
+      }
+      return NextResponse.redirect(new URL("/app", request.url));
+    }
     return response;
   } catch {
     console.log("Token verification failed, redirecting to login.");

@@ -1,38 +1,34 @@
 "use client";
-import { useUser } from "@/hooks/useUser";
-import { Client } from "@/lib/Types";
+import { Product } from "@/lib/Types";
 
 import React, { useState } from "react";
 
-const AddNewClient = () => {
+const AddProduct = () => {
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<Omit<Client, "id" | "createdBy">>({
+  const [formData, setFormData] = useState<Omit<Product, "id" | "createdAt">>({
     name: "",
-    email: "",
-    age: undefined,
-    weight: undefined,
-    height: undefined,
-    sex: "MALE",
+    description: "",
+    category: "MEAT",
+    protein: 0,
+    fat: 0,
+    carbs: 0,
+    kcal: 0,
+    unit: "G",
   });
-  const user = useUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      if (!user.user) {
-        throw new Error("User authentication error: " + user.error);
-      }
-      const trainerId = user.user.id;
-      const response = await fetch("/api/clients/addClient", {
+      const response = await fetch("/api/products/addProduct", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...formData, trainerId }),
+        body: JSON.stringify(formData),
       });
       if (!response.ok) {
-        throw new Error("Failed to add client");
+        throw new Error("Failed to add product");
       }
       const data = await response.json();
       console.log("Client added successfully:", data);
@@ -43,11 +39,13 @@ const AddNewClient = () => {
     }
     setFormData({
       name: "",
-      email: "",
-      age: undefined,
-      weight: undefined,
-      height: undefined,
-      sex: "MALE",
+      description: "",
+      category: "MEAT",
+      protein: 0,
+      fat: 0,
+      carbs: 0,
+      kcal: 0,
+      unit: "G",
     });
     setLoading(false);
   };
@@ -87,118 +85,126 @@ const AddNewClient = () => {
             className="px-4 py-2 bg-white rounded-xl active:outline-none focus:outline-none focus:ring-0"
           />
         </div>
-        {/* email input */}
+        {/* description input */}
         <div className="flex flex-col">
           <label
             htmlFor="email"
             className="px-2 pt-1 translate-y-1/4 bg-white rounded-t-xl w-fit"
           >
-            E-mail
+            description
           </label>
-          <input
-            placeholder="email@domain.com"
+          <textarea
+            placeholder="drscription"
             type="text"
             name="email"
             id="email"
-            value={formData.email}
+            value={formData.description}
             required
             onChange={handleInputChange}
             className="px-4 py-2 bg-white rounded-xl active:outline-none focus:outline-none focus:ring-0"
           />
         </div>
         <div className="flex gap-4">
-          {/* age input */}
+          {/* protein input */}
           <div className="flex flex-col flex-1">
             <label
-              htmlFor="age"
+              htmlFor="protein"
               className="px-2 pt-1 translate-y-1/4 bg-white rounded-t-xl w-fit"
             >
-              Age
+              Protein
             </label>
             <input
               min={0}
-              max={150}
               placeholder="25"
               type="number"
-              name="age"
-              id="age"
-              value={formData.age}
+              name="protein"
+              id="protein"
+              value={formData.protein}
               required
               onChange={handleInputChange}
               className="pl-4 pr-2 py-2 bg-white rounded-xl active:outline-none focus:outline-none focus:ring-0 flex-1 w-16"
             />
           </div>
-          {/* sex input */}
+          {/* fat input */}
           <div className="flex flex-col flex-1">
             <label
-              htmlFor="sex"
+              htmlFor="fat"
               className="px-2 pt-1 translate-y-1/4 bg-white rounded-t-xl w-fit"
             >
-              Sex
-            </label>
-            <select
-              name="sex"
-              id="sex"
-              value={formData.sex}
-              onChange={handleInputChange}
-              className="px-4 py-2 bg-white rounded-xl active:outline-none focus:outline-none focus:ring-0"
-            >
-              <option value="MALE">Male</option>
-              <option value="FEMALE">Female</option>
-            </select>
-          </div>
-          {/* weight input */}
-          <div className="flex flex-col flex-1">
-            <label
-              htmlFor="weight"
-              className="px-2 pt-1 translate-y-1/4 bg-white rounded-t-xl w-fit"
-            >
-              Weight
+              Fat
             </label>
             <input
               min={0}
-              max={500}
-              placeholder="70"
+              placeholder="25"
               type="number"
-              name="weight"
-              id="weight"
-              value={formData.weight}
+              name="fat"
+              id="fat"
+              value={formData.fat}
               required
               onChange={handleInputChange}
               className="pl-4 pr-2 py-2 bg-white rounded-xl active:outline-none focus:outline-none focus:ring-0 flex-1 w-16"
             />
           </div>
-          {/* height input */}
+          {/* carbs input */}
           <div className="flex flex-col flex-1">
             <label
-              htmlFor="height"
+              htmlFor="carbs"
               className="px-2 pt-1 translate-y-1/4 bg-white rounded-t-xl w-fit"
             >
-              Height
+              Carbs
             </label>
             <input
               min={0}
-              max={300}
-              placeholder="175"
+              placeholder="25"
               type="number"
-              name="height"
-              id="height"
-              value={formData.height}
+              name="carbs"
+              id="carbs"
+              value={formData.carbs}
               required
               onChange={handleInputChange}
               className="pl-4 pr-2 py-2 bg-white rounded-xl active:outline-none focus:outline-none focus:ring-0 flex-1 w-16"
             />
           </div>
         </div>
+        {/* sex input */}
+        <div className="flex flex-col flex-1">
+          <label
+            htmlFor="sex"
+            className="px-2 pt-1 translate-y-1/4 bg-white rounded-t-xl w-fit"
+          >
+            Category
+          </label>
+          <select
+            name="category"
+            id="category"
+            value={formData.category}
+            onChange={handleInputChange}
+            className="px-4 py-2 bg-white rounded-xl active:outline-none focus:outline-none focus:ring-0"
+          >
+            <option value="MEAT">Meat</option>
+            <option value="FISH">Fish</option>
+            <option value="DAIRY">Dairy</option>
+            <option value="FRUITS">Fruits</option>
+            <option value="VEGETABLES">Vegetables</option>
+            <option value="BREAD">Bread</option>
+            <option value="COOKING">Cooking</option>
+            <option value="LEGUMES">Legumes</option>
+            <option value="SPICES">Spices</option>
+            <option value="GRAINS">Grains</option>
+            <option value="GREENS">Greens</option>
+            <option value="OTHER">Other</option>
+            <option value="SUPPLEMENTS">Supplements</option>
+          </select>
+        </div>
         <button
           type="submit"
           className="px-4 py-2 bg-white text-lg hover:shadow-md active:scale-95 transition-all duration-200 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? "Adding..." : "Add Client"}
+          {loading ? "Adding..." : "Add Product"}
         </button>
       </form>
     </section>
   );
 };
 
-export default AddNewClient;
+export default AddProduct;

@@ -39,6 +39,7 @@ model Product {
   carbs       Float
   kcal        Float
   unit        Unit
+  amount      Float
   createdAt   DateTime  @default(now())
  
   mealProducts MealProduct[]

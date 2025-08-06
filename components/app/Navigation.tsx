@@ -2,7 +2,7 @@
 import { useUser } from "@/hooks/useUser";
 import Image from "next/image";
 import Link from "next/link";
-import { FaList, FaUser } from "react-icons/fa";
+import { FaList, FaUser, FaUsers } from "react-icons/fa";
 import { FaArrowRightFromBracket, FaGear } from "react-icons/fa6";
 import { GiHotMeal } from "react-icons/gi";
 import { PiGridFour } from "react-icons/pi";
@@ -84,35 +84,27 @@ const Navigation = () => {
       </ul>
 
       <div className="h-[1px] bg-neutral-400/50 w-full"></div>
-
+      {/* admin only bar */}
       {user && user.role && user.role.toLowerCase() === "admin" ? (
         <ul className="flex flex-col gap-2 w-full">
           <li className="text-xl font-semibold">Admin</li>
           <li className="w-full">
             <Link
-              href="/app"
-              className="flex items-center gap-2 text-lg rounded-xl w-full p-2 hover:bg-neutral-900 hover:text-white active:bg-neutral-800 transition-all duration-200"
-            >
-              <PiGridFour className="text-2xl" />
-              Dashboard
-            </Link>
-          </li>
-          <li className="w-full">
-            <Link
-              href="/app/clients"
-              className="flex items-center gap-2 text-lg rounded-xl w-full p-2 hover:bg-neutral-900 hover:text-white active:bg-neutral-800 transition-all duration-200"
-            >
-              <FaUser className="text-2xl" />
-              Clients
-            </Link>
-          </li>
-          <li className="w-full">
-            <Link
-              href="/app/products"
+              href="/app/admin/addproducts"
               className="flex items-center gap-2 text-lg rounded-xl w-full p-2 hover:bg-neutral-900 hover:text-white active:bg-neutral-800 transition-all duration-200"
             >
               <TbMeat className="text-2xl" />
-              Products
+              Add Product
+            </Link>
+          </li>
+
+          <li className="w-full">
+            <Link
+              href="/app/admin/users"
+              className="flex items-center gap-2 text-lg rounded-xl w-full p-2 hover:bg-neutral-900 hover:text-white active:bg-neutral-800 transition-all duration-200"
+            >
+              <FaUsers className="text-2xl" />
+              Manage users
             </Link>
           </li>
         </ul>

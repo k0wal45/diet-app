@@ -7,4 +7,6 @@ export async function POST(req: NextRequest) {
   const product = await req.json();
 
   console.log("Received product data:", product);
+
+  return NextResponse.json({ success: true, product }, { status: 200 });
 }

@@ -11,10 +11,10 @@ const YourClients = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setClientsLoading(true);
       try {
         if (!user) {
-          console.error("User not found");
-          return;
+          throw new Error("User not found");
         }
         const res = await fetch(
           "/api/clients/getClientByDietician?trainer=" + user.id,
@@ -25,9 +25,12 @@ const YourClients = () => {
         );
 
         const data = await res.json();
-        console.log(data);
+        setClients(data);
+        setClientsLoading(false);
       } catch (error) {
         console.log(error);
+        setClientsLoading(false);
+        return;
       }
     };
 
@@ -48,7 +51,7 @@ const YourClients = () => {
       {clientsLoading ? (
         <div className="">loading ...</div>
       ) : (
-        <div className="flex gap-8">
+        <div className="flex gap-8 flex-wrap">
           {clients.map((clientObject: Client) => (
             <ClientItem client={clientObject} key={clientObject.id} />
           ))}
