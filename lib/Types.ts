@@ -56,6 +56,7 @@ export interface Product {
   carbs: number;
   kcal: number;
   unit: Unit;
+  amount: number;
   createdAt: Date;
   mealProducts?: MealProduct[];
 }

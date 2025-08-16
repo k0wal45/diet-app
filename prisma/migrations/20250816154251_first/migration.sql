@@ -46,6 +46,7 @@ CREATE TABLE "Product" (
     "carbs" DOUBLE PRECISION NOT NULL,
     "kcal" DOUBLE PRECISION NOT NULL,
     "unit" "Unit" NOT NULL,
+    "amount" DOUBLE PRECISION NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Product_pkey" PRIMARY KEY ("id")

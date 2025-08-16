@@ -1,12 +1,63 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import bcrypt from "bcryptjs";
+import { checkValidToken } from "@/lib/checkValidToken";
 
 export async function POST(req: NextRequest) {
-  const product = await req.json();
+  const isValid = await checkValidToken(req);
+  if (!isValid) {
+    return NextResponse.json({
+      success: false,
+      body: "Invalid token",
+    });
+  }
 
-  console.log("Received product data:", product);
+  try {
+    const {
+      name,
+      description,
+      category,
+      protein,
+      fat,
+      carbs,
+      kcal,
+      unit,
+      amount,
+    } = await req.json();
 
-  return NextResponse.json({ success: true, product }, { status: 200 });
+    if (
+      !name &&
+      !description &&
+      !category &&
+      !protein &&
+      !fat &&
+      !carbs &&
+      !kcal &&
+      !unit &&
+      !amount
+    ) {
+      throw new Error("Invalid data");
+    }
+
+    const newProduct = await prisma.product.create({
+      data: {
+        name,
+        description,
+        category,
+        protein: parseFloat(protein),
+        fat: parseFloat(fat),
+        carbs: parseFloat(carbs),
+        kcal: parseFloat(kcal),
+        unit,
+        amount: parseFloat(amount),
+      },
+    });
+
+    console.log("New product: ", newProduct);
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ success: false, error }, { status: 401 });
+  }
 }
