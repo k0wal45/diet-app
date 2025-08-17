@@ -113,7 +113,7 @@ const AddProduct = () => {
             type="text"
             name="description"
             id="description"
-            value={formData.description}
+            value={formData.description ? formData.description : ""}
             onChange={handleInputChange}
             className="px-4 py-2 bg-white rounded-xl active:outline-none focus:outline-none focus:ring-0"
           />
@@ -204,13 +204,13 @@ const AddProduct = () => {
               className="pl-4 pr-2 py-2 bg-white rounded-xl active:outline-none focus:outline-none focus:ring-0 flex-1 w-16"
             />
           </div>
-          {/* category input */}
+          {/* unit input */}
           <div className="flex flex-col flex-1">
             <label
-              htmlFor="category"
+              htmlFor="unit"
               className="px-2 pt-1 translate-y-1/4 bg-white rounded-t-xl w-fit"
             >
-              Category
+              Unit
             </label>
             <select
               name="unit"

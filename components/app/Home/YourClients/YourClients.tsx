@@ -52,9 +52,13 @@ const YourClients = () => {
         <div className="">loading ...</div>
       ) : (
         <div className="flex gap-8 flex-wrap">
-          {clients.map((clientObject: Client) => (
-            <ClientItem client={clientObject} key={clientObject.id} />
-          ))}
+          {clients.length > 0 ? (
+            clients.map((clientObject: Client) => (
+              <ClientItem client={clientObject} key={clientObject.id} />
+            ))
+          ) : (
+            <p>No clients found</p>
+          )}
         </div>
       )}
     </section>

@@ -1,6 +1,7 @@
 "use client";
 
-import AddProduct from "@/components/app/admin/AddProduct";
+import AddProduct from "@/components/app/admin/products/AddProduct";
+import ProductsList from "@/components/app/products/ProductsList";
 
 const Page = () => {
   return (
@@ -8,7 +9,10 @@ const Page = () => {
       <div className="flex flex-col gap-2">
         <p className="text-thin">Add products</p>
       </div>
-      <AddProduct />
+      <div className="flex gap-8">
+        <AddProduct />
+        <ProductsList />
+      </div>
     </section>
   );
 };
