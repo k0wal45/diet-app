@@ -58,9 +58,9 @@ const ProductsList = () => {
       ) : (
         <div className="flex flex-wrap">
           {productsData.map((item: GroupedProduct) => (
-            <div key={item.category} className="flex flex-col gap-8">
+            <div key={item.category} className="flex flex-col">
               <h2 className="text-xl font-semibold">{item.category}</h2>
-              <ul className="p-4 flex flex-col">
+              <ul className="p-2 flex flex-col">
                 {item.products.map((product: Product) => (
                   <li key={product.id}>{product.name}</li>
                 ))}

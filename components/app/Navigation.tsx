@@ -18,7 +18,7 @@ const Navigation = () => {
 
   return (
     <nav
-      className="sticky top-0 left-0 h-screen p-4 bg-neutral-300 flex flex-col w-56 gap-6 overflow-y-scroll"
+      className="sticky top-0 left-0 h-screen p-4 bg-neutral-300 flex flex-col min-w-56 gap-6 overflow-y-scroll"
       style={{
         scrollbarWidth: "thin",
         scrollbarColor: "#a3a3a3 #e5e5e5",

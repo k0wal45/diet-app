@@ -110,7 +110,6 @@ const AddProduct = () => {
           </label>
           <textarea
             placeholder="Description"
-            type="text"
             name="description"
             id="description"
             value={formData.description ? formData.description : ""}

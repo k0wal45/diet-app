@@ -1,6 +1,6 @@
 "use client";
 
-import AddProduct from "@/components/app/admin/products/AddProduct";
+import AddProduct from "@/components/app/products/AddProduct";
 import ProductsList from "@/components/app/products/ProductsList";
 
 const Page = () => {
