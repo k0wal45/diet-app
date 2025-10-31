@@ -35,17 +35,12 @@ const AddUser = () => {
       setLoading(false);
       return;
     }
-    // setFormData({
-    //   name: "",
-    //   description: "",
-    //   category: "MEAT",
-    //   protein: 0,
-    //   fat: 0,
-    //   carbs: 0,
-    //   kcal: 0,
-    //   unit: "G",
-    //   amount: 100,
-    // });
+    setFormData({
+      name: "",
+      email: "",
+      role: "USER",
+      password: "",
+    });
     setLoading(false);
   };
 
