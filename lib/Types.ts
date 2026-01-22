@@ -41,6 +41,7 @@ export interface Client {
   height?: number | null;
   sex: Sex;
   createdBy: number;
+  activityFactor: number;
   trainer?: User;
   diets?: Diet[];
 }

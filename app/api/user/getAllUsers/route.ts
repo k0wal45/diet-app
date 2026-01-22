@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-// In API route or server action
 import { prisma } from "@/lib/prisma";
 import { checkValidToken } from "@/lib/checkValidToken";
 
@@ -16,8 +15,6 @@ export async function GET(req: NextRequest) {
 
   try {
     const users = await prisma.user.findMany();
-
-    console.log("Retrieved users:", users);
 
     if (!users) {
       return NextResponse.json("Failed to retrieve users", {

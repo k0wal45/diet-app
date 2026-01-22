@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Client" ADD COLUMN     "activityFactor" DOUBLE PRECISION NOT NULL DEFAULT 1.2;

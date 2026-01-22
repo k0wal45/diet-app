@@ -24,6 +24,7 @@ model Client {
   weight    Float?
   height    Float?
   sex       Sex
+  activityFactor Float @default(1.2)
   createdBy Int
   trainer   User    @relation(fields: [createdBy], references: [id])
   diets     Diet[]

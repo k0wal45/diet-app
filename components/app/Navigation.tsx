@@ -56,15 +56,6 @@ const Navigation = () => {
         </li>
         <li className="w-full">
           <Link
-            href="/app/products"
-            className="flex items-center gap-2 text-lg rounded-xl w-full p-2 hover:bg-neutral-900 hover:text-white active:bg-neutral-800 transition-all duration-200"
-          >
-            <TbMeat className="text-2xl" />
-            Products
-          </Link>
-        </li>
-        <li className="w-full">
-          <Link
             href="/app/meals"
             className="flex items-center gap-2 text-lg rounded-xl w-full p-2 hover:bg-neutral-900 hover:text-white active:bg-neutral-800 transition-all duration-200"
           >
@@ -117,10 +108,10 @@ const Navigation = () => {
           {loading
             ? ""
             : error
-            ? ""
-            : user
-            ? firstLetterCapital(user.name ?? "")
-            : "user not found"}
+              ? ""
+              : user
+                ? firstLetterCapital(user.name ?? "")
+                : "user not found"}
         </p>
         <a href={"mailto:" + user?.email} className="text-sm underline">
           {loading ? "Loading..." : error ? "Error loading user" : user?.email}
