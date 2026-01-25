@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     if (user.email === ParsedEmail && isMatch) {
       // Generate a JWT
       const token = jwt.sign({ role: user.role, id: user.id }, SECRET_KEY, {
-        expiresIn: "1h",
+        expiresIn: "3h",
       });
 
       const response = NextResponse.json({ success: true });
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
       // Set JWT in HTTP-only cookie
       response.cookies.set("token", token, {
         httpOnly: true,
-        maxAge: 3600, // 1 hour expiry
+        maxAge: 3600 * 3, // 3 hour expiry
         path: "/",
       });
 

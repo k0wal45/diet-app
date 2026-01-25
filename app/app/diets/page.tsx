@@ -1,4 +1,4 @@
-import DietList from "@/components/app/diet/DietList";
+import DietList from "@/components/app/diets/DietList";
 import React from "react";
 
 const page = () => {

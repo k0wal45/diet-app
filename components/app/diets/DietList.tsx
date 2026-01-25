@@ -1,5 +1,6 @@
 import React from "react";
 import ListItem from "./ListItem";
+import { FaPlus, FaPlusCircle } from "react-icons/fa";
 
 const groupDiets = (diets: Diet[]): GroupedDiet[] => {
   return diets.reduce((acc, diet) => {
@@ -36,6 +37,9 @@ const DietList = () => {
               <li>Weight: {item.client.weight} kg</li>
               <li>Height: {item.client.height} cm</li>
               <li>Sex: {item.client.sex}</li>
+              <li>
+                <FaPlusCircle className="text-2xl text-neutral-500 hover:text-neutral-700 duration-100 active:scale-90" />
+              </li>
             </ul>
           </div>
           {item.diets.map((diet: Diet) => (
