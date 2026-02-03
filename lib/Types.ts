@@ -47,66 +47,53 @@ export interface Client {
 }
 
 // Model: Product
+
 export interface Product {
   id: number;
   name: string;
-  description?: string | null;
+  description?: string;
   category: ProductCategory;
   protein: number;
   fat: number;
   carbs: number;
   kcal: number;
   unit: Unit;
-  amount: number;
-  createdAt: Date;
-  mealProducts?: MealProduct[];
+  amount: number; // Ilość bazowa dla makro (np. 100g)
+  createdAt?: string;
 }
 
-// Model: Meal
-export interface Meal {
-  id: number;
-  name: string;
-  description?: string | null;
-  kcal: number;
-  protein: number;
-  fat: number;
-  carbs: number;
-  createdAt: Date;
-  mealProducts?: MealProduct[];
-  dietMeals?: DietMeal[];
-}
-
-// Model: MealProduct
 export interface MealProduct {
   id: number;
   mealId: number;
   productId: number;
-  quantity: number;
-  meal?: Meal;
-  product?: Product;
+  quantity: number; // Ilość faktycznie użyta w posiłku (np. 150g)
+  product: Product; // Zagnieżdżony produkt (Relacja)
 }
 
-// Model: Diet
-export interface Diet {
+export interface Meal {
   id: number;
   name: string;
   description?: string | null;
-  saved: boolean;
-  kcal: number;
-  protein: number;
-  fat: number;
-  carbs: number;
-  createdAt: Date;
-  clientId?: number | null;
-  client?: Client | null;
+  createdAt?: string;
+  mealProducts: MealProduct[]; // Posiłek składa się z produktów
   dietMeals?: DietMeal[];
 }
 
-// Model: DietMeal
 export interface DietMeal {
   id: number;
   dietId: number;
   mealId: number;
-  diet?: Diet;
-  meal?: Meal;
+  meal: Meal; // Zagnieżdżony posiłek
+}
+
+export interface Diet {
+  id: number;
+  name: string;
+  description?: string;
+  saved: boolean;
+  // Pola makro usunięte - będą liczone dynamicznie w UI na podstawie klienta lub posiłków
+  createdAt: string;
+  clientId: number;
+  client: Client;
+  dietMeals: DietMeal[]; // Relacja Dieta -> Posiłki
 }

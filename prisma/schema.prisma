@@ -17,82 +17,69 @@ model User {
 }
 
 model Client {
-  id        Int     @id @default(autoincrement())
-  name      String
-  email     String? @unique
-  age       Int?
-  weight    Float?
-  height    Float?
-  sex       Sex
-  activityFactor Float @default(1.2)
-  createdBy Int
-  trainer   User    @relation(fields: [createdBy], references: [id])
-  diets     Diet[]
+  id              Int     @id @default(autoincrement())
+  name            String
+  email           String? @unique
+  age             Int?
+  weight          Float?
+  height          Float?
+  sex             Sex
+  activityFactor  Float   @default(1.2)
+  createdBy       Int
+  trainer         User    @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  diets           Diet[]
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  category    ProductCategory
-  protein     Float
-  fat         Float
-  carbs       Float
-  kcal        Float
-  unit        Unit
-  amount      Float
-  createdAt   DateTime  @default(now())
- 
-  mealProducts MealProduct[]
+  id             Int      @id @default(autoincrement())
+  name           String
+  description    String?
+  category       ProductCategory
+  protein        Float
+  fat            Float
+  carbs          Float
+  kcal           Float
+  unit           Unit
+  amount         Float
+  createdAt      DateTime @default(now())
+  mealProducts   MealProduct[]
 }
 
 model Meal {
-  id           Int           @id @default(autoincrement())
-  name         String
-  description  String?
-  kcal         Float
-  protein      Float
-  fat          Float
-  carbs        Float
-  createdAt    DateTime      @default(now())
-
-  mealProducts MealProduct[]
-  dietMeals    DietMeal[]
+  id             Int      @id @default(autoincrement())
+  name           String
+  description    String?
+  createdAt      DateTime @default(now())
+  mealProducts   MealProduct[]
+  dietMeals      DietMeal[]
 }
 
 model MealProduct {
-  id         Int      @id @default(autoincrement())
-  mealId     Int
-  productId  Int
-  quantity   Float     // np. 150g
-
-  meal       Meal      @relation(fields: [mealId], references: [id])
-  product    Product   @relation(fields: [productId], references: [id])
+  id        Int     @id @default(autoincrement())
+  mealId    Int
+  productId Int
+  quantity  Float
+  meal      Meal    @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Diet {
-  id          Int         @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   description String?
-  saved       Boolean     @default(false)
-  kcal        Float
-  protein     Float
-  fat         Float
-  carbs       Float
-  createdAt   DateTime    @default(now())
-
-  clientId    Int?
-  client      Client?     @relation(fields: [clientId], references: [id])
+  saved       Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  clientId    Int
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
   dietMeals   DietMeal[]
 }
 
 model DietMeal {
-  id        Int   @id @default(autoincrement())
-  dietId    Int
-  mealId    Int
-
-  diet      Diet  @relation(fields: [dietId], references: [id])
-  meal      Meal  @relation(fields: [mealId], references: [id])
+  id     Int  @id @default(autoincrement())
+  dietId Int
+  mealId Int
+  diet   Diet @relation(fields: [dietId], references: [id], onDelete: Cascade)
+  meal   Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)
 }
 
 enum Sex {
@@ -107,8 +94,8 @@ enum UserRole {
 }
 
 enum Unit {
-  G 
-  ML 
+  G
+  ML
   SLICE
 }
 

@@ -1,6 +1,8 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import ListItem from "./ListItem";
-import { FaPlus, FaPlusCircle } from "react-icons/fa";
+import { FaArrowDown } from "react-icons/fa";
+import { Client, Diet, Product } from "@/lib/Types";
 
 const groupDiets = (diets: Diet[]): GroupedDiet[] => {
   return diets.reduce((acc, diet) => {
@@ -12,7 +14,7 @@ const groupDiets = (diets: Diet[]): GroupedDiet[] => {
       existingGroup.diets.push(diet);
     } else {
       acc.push({
-        client: diet.client,
+        client: diet.client!,
         diets: [diet],
       });
     }
@@ -22,9 +24,8 @@ const groupDiets = (diets: Diet[]): GroupedDiet[] => {
 };
 
 const DietList = () => {
+  const [showDiets, setShowDiets] = useState(false);
   const mockGroupedDiets: GroupedDiet[] = groupDiets(mockDiets);
-
-  console.log(mockGroupedDiets);
 
   return (
     <div className="flex flex-col gap-8 w-full">
@@ -37,14 +38,22 @@ const DietList = () => {
               <li>Weight: {item.client.weight} kg</li>
               <li>Height: {item.client.height} cm</li>
               <li>Sex: {item.client.sex}</li>
-              <li>
-                <FaPlusCircle className="text-2xl text-neutral-500 hover:text-neutral-700 duration-100 active:scale-90" />
+              <li onClick={() => setShowDiets(!showDiets)}>
+                <FaArrowDown
+                  className="text-2xl text-neutral-500 hover:text-neutral-700 duration-100 active:scale-90"
+                  style={{ transform: showDiets ? "" : "rotate(90deg)" }}
+                />
               </li>
             </ul>
           </div>
-          {item.diets.map((diet: Diet) => (
-            <ListItem key={diet.id} />
-          ))}
+          <div
+            className="flex flex-col gap-8"
+            style={{ display: showDiets ? "flex" : "none" }}
+          >
+            {item.diets.map((diet: Diet) => (
+              <ListItem key={diet.id} diet={diet} />
+            ))}
+          </div>
         </div>
       ))}
     </div>
@@ -52,51 +61,154 @@ const DietList = () => {
 };
 
 export default DietList;
-// Opcjonalnie typy, jeśli potrzebujesz
-type Sex = "MALE" | "FEMALE";
-
-interface Client {
-  id: number;
-  name: string;
-  age: number;
-  weight: number;
-  height: number;
-  sex: Sex;
-  activityFactor: number;
-}
-
-interface Diet {
-  id: number;
-  name: string;
-  description: string | null;
-  saved: boolean;
-  kcal: number;
-  protein: number;
-  fat: number;
-  carbs: number;
-  createdAt: string;
-  clientId: number;
-  client: Client;
-  dietMeals: any[]; // Puste pole, bo nie jest wymagane w widoku listy
-}
-
 interface GroupedDiet {
   client: Client;
   diets: Diet[];
 }
-// --- DANE ---
+// --- MOCK DATA ---
+
+const products = {
+  chickenBreast: {
+    id: 1,
+    name: "Pierś z kurczaka",
+    category: "PROTEIN",
+    protein: 21.5,
+    fat: 1.3,
+    carbs: 0,
+    kcal: 99,
+    unit: "G",
+    amount: 100,
+  } as Product,
+  riceWhite: {
+    id: 2,
+    name: "Ryż biały",
+    category: "CARB",
+    protein: 2.7,
+    fat: 0.3,
+    carbs: 77,
+    kcal: 344,
+    unit: "G",
+    amount: 100,
+  } as Product,
+  oliveOil: {
+    id: 3,
+    name: "Oliwa z oliwek",
+    category: "FAT",
+    protein: 0,
+    fat: 100,
+    carbs: 0,
+    kcal: 884,
+    unit: "ML",
+    amount: 100,
+  } as Product,
+  broccoli: {
+    id: 4,
+    name: "Brokuły",
+    category: "VEGETABLE",
+    protein: 2.8,
+    fat: 0.4,
+    carbs: 7,
+    kcal: 34,
+    unit: "G",
+    amount: 100,
+  } as Product,
+  eggs: {
+    id: 5,
+    name: "Jajko Kurze (L)",
+    category: "PROTEIN",
+    protein: 12.5,
+    fat: 9.7,
+    carbs: 0.6,
+    kcal: 140,
+    unit: "PCS",
+    amount: 100,
+  } as Product, // amount 100 tutaj to umowna waga lub przelicznik na sztuki
+  oats: {
+    id: 6,
+    name: "Płatki owsiane",
+    category: "CARB",
+    protein: 13,
+    fat: 7,
+    carbs: 66,
+    kcal: 370,
+    unit: "G",
+    amount: 100,
+  } as Product,
+  wheyProtein: {
+    id: 7,
+    name: "Odżywka Białkowa (WPC)",
+    category: "PROTEIN",
+    protein: 78,
+    fat: 6,
+    carbs: 5,
+    kcal: 390,
+    unit: "G",
+    amount: 100,
+  } as Product,
+  avocado: {
+    id: 8,
+    name: "Awokado",
+    category: "FAT",
+    protein: 2,
+    fat: 15,
+    carbs: 9,
+    kcal: 160,
+    unit: "G",
+    amount: 100,
+  } as Product,
+  salmon: {
+    id: 9,
+    name: "Łosoś świeży",
+    category: "PROTEIN",
+    protein: 20,
+    fat: 13,
+    carbs: 0,
+    kcal: 200,
+    unit: "G",
+    amount: 100,
+  } as Product,
+  potato: {
+    id: 10,
+    name: "Ziemniaki",
+    category: "CARB",
+    protein: 2,
+    fat: 0.1,
+    carbs: 17,
+    kcal: 77,
+    unit: "G",
+    amount: 100,
+  } as Product,
+  beef: {
+    id: 11,
+    name: "Wołowina (udziec)",
+    category: "PROTEIN",
+    protein: 26,
+    fat: 15,
+    carbs: 0,
+    kcal: 250,
+    unit: "G",
+    amount: 100,
+  } as Product,
+  spinach: {
+    id: 12,
+    name: "Szpinak świeży",
+    category: "VEGETABLE",
+    protein: 2.9,
+    fat: 0.4,
+    carbs: 3.6,
+    kcal: 23,
+    unit: "G",
+    amount: 100,
+  } as Product,
+};
+
 export const mockDiets: Diet[] = [
-  // --- KLIENT 1: Michał Kowalski (Cel: Budowa sylwetki) ---
   {
     id: 1,
     name: "Redukcja - Start",
     description:
       "Początkowy etap redukcji, umiarkowany deficyt, wysokie białko.",
     saved: true,
-    kcal: 2250,
-    protein: 180,
-    fat: 70,
-    carbs: 210,
     createdAt: "2023-10-25T10:00:00Z",
     clientId: 101,
     client: {
@@ -107,18 +219,119 @@ export const mockDiets: Diet[] = [
       height: 182,
       sex: "MALE",
       activityFactor: 1.55,
+      createdBy: 0,
     },
-    dietMeals: [],
+    dietMeals: [
+      {
+        id: 1001,
+        dietId: 1,
+        mealId: 101,
+        meal: {
+          id: 101,
+          name: "Jajecznica na parze ze szczypiorkiem",
+          description: "Lekkie śniadanie białkowe",
+          createdAt: "2023-10-25T08:00:00Z",
+          mealProducts: [
+            {
+              id: 1,
+              mealId: 101,
+              productId: 5,
+              quantity: 3,
+              product: products.eggs,
+            }, // 3 jajka
+            {
+              id: 2,
+              mealId: 101,
+              productId: 3,
+              quantity: 5,
+              product: products.oliveOil,
+            }, // 5ml oliwy
+            {
+              id: 3,
+              mealId: 101,
+              productId: 12,
+              quantity: 50,
+              product: products.spinach,
+            }, // 50g szpinaku
+          ],
+        },
+      },
+      {
+        id: 1002,
+        dietId: 1,
+        mealId: 102,
+        meal: {
+          id: 102,
+          name: "Pierś z kurczaka z kaszą i brokułami",
+          description: "Klasyczny posiłek obiadowy",
+          createdAt: "2023-10-25T08:00:00Z",
+          mealProducts: [
+            {
+              id: 4,
+              mealId: 102,
+              productId: 1,
+              quantity: 200,
+              product: products.chickenBreast,
+            }, // 200g kurczaka
+            {
+              id: 5,
+              mealId: 102,
+              productId: 2,
+              quantity: 75,
+              product: products.riceWhite,
+            }, // 75g ryżu (zamiast kaszy w mocku)
+            {
+              id: 6,
+              mealId: 102,
+              productId: 4,
+              quantity: 150,
+              product: products.broccoli,
+            }, // 150g brokuł
+            {
+              id: 7,
+              mealId: 102,
+              productId: 3,
+              quantity: 10,
+              product: products.oliveOil,
+            }, // 10ml oliwy
+          ],
+        },
+      },
+      {
+        id: 1003,
+        dietId: 1,
+        mealId: 103,
+        meal: {
+          id: 103,
+          name: "Twaróg z orzechami (Keto Style)",
+          description: "Kolacja",
+          createdAt: "2023-10-25T08:00:00Z",
+          mealProducts: [
+            // Uproszczony mock produktów dla twarogu
+            {
+              id: 8,
+              mealId: 103,
+              productId: 7,
+              quantity: 30,
+              product: products.wheyProtein,
+            },
+            {
+              id: 9,
+              mealId: 103,
+              productId: 8,
+              quantity: 50,
+              product: products.avocado,
+            },
+          ],
+        },
+      },
+    ],
   },
   {
     id: 2,
     name: "Masa - Cykl 1",
     description: "Nadwyżka kaloryczna +300kcal. Trening siłowy 4x w tygodniu.",
     saved: false,
-    kcal: 3100,
-    protein: 200,
-    fat: 90,
-    carbs: 380,
     createdAt: "2023-11-10T09:00:00Z",
     clientId: 101,
     client: {
@@ -129,110 +342,84 @@ export const mockDiets: Diet[] = [
       height: 182,
       sex: "MALE",
       activityFactor: 1.55,
+      createdBy: 0,
     },
-    dietMeals: [],
+    dietMeals: [
+      {
+        id: 2001,
+        dietId: 2,
+        mealId: 201,
+        meal: {
+          id: 201,
+          name: "Owsianka Królewska (Masa)",
+          description: "Wysokowęglowodanowe śniadanie",
+          createdAt: "2023-11-10T08:00:00Z",
+          mealProducts: [
+            {
+              id: 10,
+              mealId: 201,
+              productId: 6,
+              quantity: 100,
+              product: products.oats,
+            }, // 100g owsianki
+            {
+              id: 11,
+              mealId: 201,
+              productId: 7,
+              quantity: 40,
+              product: products.wheyProtein,
+            }, // 40g białka
+            {
+              id: 12,
+              mealId: 201,
+              productId: 8,
+              quantity: 50,
+              product: products.avocado,
+            }, // Tłuszcze
+          ],
+        },
+      },
+      {
+        id: 2002,
+        dietId: 2,
+        mealId: 202,
+        meal: {
+          id: 202,
+          name: "Stek wołowy z ziemniakami",
+          description: "Solidna porcja kreatyny i żelaza",
+          createdAt: "2023-11-10T08:00:00Z",
+          mealProducts: [
+            {
+              id: 13,
+              mealId: 202,
+              productId: 11,
+              quantity: 250,
+              product: products.beef,
+            }, // 250g wołowiny
+            {
+              id: 14,
+              mealId: 202,
+              productId: 10,
+              quantity: 400,
+              product: products.potato,
+            }, // 400g ziemniaków
+            {
+              id: 15,
+              mealId: 202,
+              productId: 4,
+              quantity: 200,
+              product: products.broccoli,
+            }, // 200g warzyw
+          ],
+        },
+      },
+    ],
   },
-  {
-    id: 3,
-    name: "Low Carb - Odpoczynek",
-    description: "Dieta na dni beztreningowe. Zmniejszona ilość węglowodanów.",
-    saved: false,
-    kcal: 2400,
-    protein: 190,
-    fat: 100,
-    carbs: 100,
-    createdAt: "2023-11-15T12:00:00Z",
-    clientId: 101,
-    client: {
-      id: 101,
-      name: "Michał Kowalski",
-      age: 28,
-      weight: 92.5,
-      height: 182,
-      sex: "MALE",
-      activityFactor: 1.55,
-    },
-    dietMeals: [],
-  },
-
-  // --- KLIENT 2: Anna Nowak (Cel: Zdrowie i Hashimoto) ---
-  {
-    id: 4,
-    name: "Protokół Autoimmunologiczny",
-    description: "Eliminacja glutenu i nabiału. Skupienie na jelitach.",
-    saved: true,
-    kcal: 1800,
-    protein: 110,
-    fat: 80,
-    carbs: 160,
-    createdAt: "2023-10-01T08:30:00Z",
-    clientId: 102,
-    client: {
-      id: 102,
-      name: "Anna Nowak",
-      age: 34,
-      weight: 68.0,
-      height: 165,
-      sex: "FEMALE",
-      activityFactor: 1.375,
-    },
-    dietMeals: [],
-  },
-  {
-    id: 5,
-    name: "Dieta Śródziemnomorska",
-    description: "Dużo ryb, oliwy z oliwek i warzyw. Balans hormonalny.",
-    saved: true,
-    kcal: 1950,
-    protein: 100,
-    fat: 95,
-    carbs: 180,
-    createdAt: "2023-10-20T14:00:00Z",
-    clientId: 102,
-    client: {
-      id: 102,
-      name: "Anna Nowak",
-      age: 34,
-      weight: 68.0,
-      height: 165,
-      sex: "FEMALE",
-      activityFactor: 1.375,
-    },
-    dietMeals: [],
-  },
-  {
-    id: 6,
-    name: "Detoks cukrowy",
-    description: "Tydzień bez przetworzonego cukru. Tylko owoce.",
-    saved: false,
-    kcal: 1600,
-    protein: 90,
-    fat: 60,
-    carbs: 150,
-    createdAt: "2023-11-05T11:15:00Z",
-    clientId: 102,
-    client: {
-      id: 102,
-      name: "Anna Nowak",
-      age: 34,
-      weight: 68.0,
-      height: 165,
-      sex: "FEMALE",
-      activityFactor: 1.375,
-    },
-    dietMeals: [],
-  },
-
-  // --- KLIENT 3: Robert "Dziki" (Cel: Wytrzymałość i Keto) ---
   {
     id: 7,
     name: "Keto Adaptacja",
     description: "Wysokie tłuszcze, wejście w stan ketozy. Węgle < 30g.",
     saved: false,
-    kcal: 2600,
-    protein: 140,
-    fat: 210,
-    carbs: 25,
     createdAt: "2023-09-15T16:00:00Z",
     clientId: 103,
     client: {
@@ -243,51 +430,70 @@ export const mockDiets: Diet[] = [
       height: 178,
       sex: "MALE",
       activityFactor: 1.725,
+      createdBy: 0,
     },
-    dietMeals: [],
-  },
-  {
-    id: 8,
-    name: "Targeted Keto (TKD)",
-    description: "Ładowanie węglowodanami tylko okołotreningowo.",
-    saved: true,
-    kcal: 2800,
-    protein: 160,
-    fat: 190,
-    carbs: 80,
-    createdAt: "2023-10-10T10:00:00Z",
-    clientId: 103,
-    client: {
-      id: 103,
-      name: "Robert Dziki",
-      age: 41,
-      weight: 88.0,
-      height: 178,
-      sex: "MALE",
-      activityFactor: 1.725,
-    },
-    dietMeals: [],
-  },
-  {
-    id: 9,
-    name: "Post przerywany 16/8",
-    description: "Okno żywieniowe 12:00 - 20:00. Dwa duże posiłki.",
-    saved: false,
-    kcal: 2500,
-    protein: 180,
-    fat: 120,
-    carbs: 160,
-    createdAt: "2023-11-01T18:00:00Z",
-    clientId: 103,
-    client: {
-      id: 103,
-      name: "Robert Dziki",
-      age: 41,
-      weight: 88.0,
-      height: 178,
-      sex: "MALE",
-      activityFactor: 1.725,
-    },
-    dietMeals: [],
+    dietMeals: [
+      {
+        id: 7001,
+        dietId: 7,
+        mealId: 701,
+        meal: {
+          id: 701,
+          name: "Jajka na boczku (Keto)",
+          description: "Klasyk",
+          createdAt: "2023-09-15T08:00:00Z",
+          mealProducts: [
+            {
+              id: 20,
+              mealId: 701,
+              productId: 5,
+              quantity: 4,
+              product: products.eggs,
+            }, // 4 jajka
+            {
+              id: 21,
+              mealId: 701,
+              productId: 3,
+              quantity: 15,
+              product: products.oliveOil,
+            }, // Oliwa/Smalec
+          ],
+        },
+      },
+      {
+        id: 7002,
+        dietId: 7,
+        mealId: 702,
+        meal: {
+          id: 702,
+          name: "Łosoś pieczony z awokado",
+          description: "Tłusty obiad",
+          createdAt: "2023-09-15T08:00:00Z",
+          mealProducts: [
+            {
+              id: 22,
+              mealId: 702,
+              productId: 9,
+              quantity: 200,
+              product: products.salmon,
+            }, // 200g łososia
+            {
+              id: 23,
+              mealId: 702,
+              productId: 8,
+              quantity: 150,
+              product: products.avocado,
+            }, // 150g awokado
+            {
+              id: 24,
+              mealId: 702,
+              productId: 12,
+              quantity: 100,
+              product: products.spinach,
+            }, // Szpinak
+          ],
+        },
+      },
+    ],
   },
 ];
