@@ -24,7 +24,7 @@ const groupDiets = (diets: Diet[]): GroupedDiet[] => {
 };
 
 const DietList = () => {
-  const [showDiets, setShowDiets] = useState(false);
+  const [showDiets, setShowDiets] = useState<number[]>([]);
   const mockGroupedDiets: GroupedDiet[] = groupDiets(mockDiets);
 
   return (
@@ -38,17 +38,31 @@ const DietList = () => {
               <li>Weight: {item.client.weight} kg</li>
               <li>Height: {item.client.height} cm</li>
               <li>Sex: {item.client.sex}</li>
-              <li onClick={() => setShowDiets(!showDiets)}>
+              <li
+                onClick={() =>
+                  setShowDiets((prev) =>
+                    prev.includes(item.client.id)
+                      ? prev.filter((id) => id !== item.client.id)
+                      : [...prev, item.client.id],
+                  )
+                }
+              >
                 <FaArrowDown
                   className="text-2xl text-neutral-500 hover:text-neutral-700 duration-100 active:scale-90"
-                  style={{ transform: showDiets ? "" : "rotate(90deg)" }}
+                  style={{
+                    transform: showDiets.includes(item.client.id)
+                      ? ""
+                      : "rotate(90deg)",
+                  }}
                 />
               </li>
             </ul>
           </div>
           <div
             className="flex flex-col gap-8"
-            style={{ display: showDiets ? "flex" : "none" }}
+            style={{
+              display: showDiets.includes(item.client.id) ? "flex" : "none",
+            }}
           >
             {item.diets.map((diet: Diet) => (
               <ListItem key={diet.id} diet={diet} />
@@ -71,7 +85,7 @@ const products = {
   chickenBreast: {
     id: 1,
     name: "Pierś z kurczaka",
-    category: "PROTEIN",
+    category: "MEAT",
     protein: 21.5,
     fat: 1.3,
     carbs: 0,
@@ -82,7 +96,7 @@ const products = {
   riceWhite: {
     id: 2,
     name: "Ryż biały",
-    category: "CARB",
+    category: "MEAT",
     protein: 2.7,
     fat: 0.3,
     carbs: 77,
@@ -93,7 +107,7 @@ const products = {
   oliveOil: {
     id: 3,
     name: "Oliwa z oliwek",
-    category: "FAT",
+    category: "MEAT",
     protein: 0,
     fat: 100,
     carbs: 0,
@@ -104,7 +118,7 @@ const products = {
   broccoli: {
     id: 4,
     name: "Brokuły",
-    category: "VEGETABLE",
+    category: "MEAT",
     protein: 2.8,
     fat: 0.4,
     carbs: 7,
@@ -115,18 +129,18 @@ const products = {
   eggs: {
     id: 5,
     name: "Jajko Kurze (L)",
-    category: "PROTEIN",
+    category: "MEAT",
     protein: 12.5,
     fat: 9.7,
     carbs: 0.6,
     kcal: 140,
-    unit: "PCS",
+    unit: "SLICE",
     amount: 100,
   } as Product, // amount 100 tutaj to umowna waga lub przelicznik na sztuki
   oats: {
     id: 6,
     name: "Płatki owsiane",
-    category: "CARB",
+    category: "MEAT",
     protein: 13,
     fat: 7,
     carbs: 66,
@@ -137,7 +151,7 @@ const products = {
   wheyProtein: {
     id: 7,
     name: "Odżywka Białkowa (WPC)",
-    category: "PROTEIN",
+    category: "MEAT",
     protein: 78,
     fat: 6,
     carbs: 5,
@@ -148,7 +162,7 @@ const products = {
   avocado: {
     id: 8,
     name: "Awokado",
-    category: "FAT",
+    category: "MEAT",
     protein: 2,
     fat: 15,
     carbs: 9,
@@ -159,7 +173,7 @@ const products = {
   salmon: {
     id: 9,
     name: "Łosoś świeży",
-    category: "PROTEIN",
+    category: "MEAT",
     protein: 20,
     fat: 13,
     carbs: 0,
@@ -170,7 +184,7 @@ const products = {
   potato: {
     id: 10,
     name: "Ziemniaki",
-    category: "CARB",
+    category: "MEAT",
     protein: 2,
     fat: 0.1,
     carbs: 17,
@@ -181,7 +195,7 @@ const products = {
   beef: {
     id: 11,
     name: "Wołowina (udziec)",
-    category: "PROTEIN",
+    category: "MEAT",
     protein: 26,
     fat: 15,
     carbs: 0,
@@ -192,7 +206,7 @@ const products = {
   spinach: {
     id: 12,
     name: "Szpinak świeży",
-    category: "VEGETABLE",
+    category: "GREENS",
     protein: 2.9,
     fat: 0.4,
     carbs: 3.6,
@@ -236,7 +250,7 @@ export const mockDiets: Diet[] = [
               id: 1,
               mealId: 101,
               productId: 5,
-              quantity: 3,
+              quantity: 10,
               product: products.eggs,
             }, // 3 jajka
             {
