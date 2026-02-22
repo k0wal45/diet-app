@@ -26,6 +26,11 @@ const ClientItem = ({ client }: { client: Client }) => {
           <p>Weight</p>
           <p className="text-lg font-semibold">{client.weight}</p>
         </div>
+        {/* weight */}
+        <div className="flex flex-col">
+          <p>Activity</p>
+          <p className="text-lg font-semibold">{client.activityFactor}</p>
+        </div>
       </div>
     </div>
   );

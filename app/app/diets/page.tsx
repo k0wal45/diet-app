@@ -1,13 +1,18 @@
+"use client";
+import AddDiet from "@/components/app/diets/AddDiet";
 import DietList from "@/components/app/diets/DietList";
-import React from "react";
+import React, { useState } from "react";
 
-const page = () => {
+const Page = () => {
+  const [addDiet, setAddDiet] = useState<boolean>(false);
+  console.log(addDiet);
   return (
     <section className="flex flex-col gap-8 p-8 w-screen max-w-screen">
       <h1 className="text-xl font-semibold">Diets</h1>
-      <DietList />
+      <DietList addDiet={addDiet} setAddDiet={setAddDiet} />
+      {addDiet ? <AddDiet setAddDiet={setAddDiet} /> : null}
     </section>
   );
 };
 
-export default page;
+export default Page;

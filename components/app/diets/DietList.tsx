@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import ListItem from "./ListItem";
-import { FaArrowDown } from "react-icons/fa";
+import { FaArrowDown, FaPlus } from "react-icons/fa";
 import { Client, Diet, Product } from "@/lib/Types";
 
 const groupDiets = (diets: Diet[]): GroupedDiet[] => {
@@ -23,9 +23,21 @@ const groupDiets = (diets: Diet[]): GroupedDiet[] => {
   }, [] as GroupedDiet[]);
 };
 
-const DietList = () => {
+const DietList = ({
+  addDiet,
+  setAddDiet,
+}: {
+  addDiet: boolean;
+  setAddDiet: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [showDiets, setShowDiets] = useState<number[]>([]);
   const mockGroupedDiets: GroupedDiet[] = groupDiets(mockDiets);
+
+  const onclickPlus = () => {
+    console.log("clicked");
+    setAddDiet(true);
+    console.log(addDiet);
+  };
 
   return (
     <div className="flex flex-col gap-8 w-full">
@@ -70,6 +82,12 @@ const DietList = () => {
           </div>
         </div>
       ))}
+      <div
+        className="w-full grid place-items-center bg-neutral-100 h-20 rounded-xl group hover:bg-neutral-200 duration-200"
+        onClick={onclickPlus}
+      >
+        <FaPlus className="text-neutral-700 text-2xl duration-200 group-hover:text-3xl group-active:text-2xl" />
+      </div>
     </div>
   );
 };
