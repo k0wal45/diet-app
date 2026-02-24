@@ -1,5 +1,5 @@
 "use client";
-import AddDiet from "@/components/app/diets/AddDiet";
+import AddDiet from "@/components/app/diets/AddDiet/AddDiet";
 import DietList from "@/components/app/diets/DietList";
 import React, { useState } from "react";
 

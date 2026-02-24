@@ -1,8 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import ListItem from "./ListItem";
-import { FaArrowDown, FaPlus } from "react-icons/fa";
+import { FaArrowDown, FaList, FaPlus } from "react-icons/fa";
 import { Client, Diet, Product } from "@/lib/Types";
+import { FaPerson } from "react-icons/fa6";
+import Link from "next/link";
 
 const groupDiets = (diets: Diet[]): GroupedDiet[] => {
   return diets.reduce((acc, diet) => {
@@ -79,15 +81,27 @@ const DietList = ({
             {item.diets.map((diet: Diet) => (
               <ListItem key={diet.id} diet={diet} />
             ))}
+            <div
+              className="grid place-items-center bg-neutral-100 h-20 rounded-xl group hover:bg-neutral-200 duration-200 ml-4"
+              onClick={onclickPlus}
+            >
+              <div className="flex gap-4">
+                <FaPlus className="text-neutral-700 text-2xl duration-200 group-hover:text-3xl group-active:text-2xl" />
+                <FaList className="text-neutral-700 text-2xl duration-200 group-hover:text-3xl group-active:text-2xl" />
+              </div>
+            </div>
           </div>
         </div>
       ))}
-      <div
-        className="w-full grid place-items-center bg-neutral-100 h-20 rounded-xl group hover:bg-neutral-200 duration-200"
-        onClick={onclickPlus}
+      <Link
+        href="/app/clients"
+        className="grid place-items-center bg-neutral-200 h-20 rounded-xl group hover:bg-neutral-100 duration-200 ml-4"
       >
-        <FaPlus className="text-neutral-700 text-2xl duration-200 group-hover:text-3xl group-active:text-2xl" />
-      </div>
+        <div className="flex gap-2">
+          <FaPlus className="text-neutral-700 text-2xl duration-200 group-hover:text-3xl group-active:text-2xl" />
+          <FaPerson className="text-neutral-700 text-2xl duration-200 group-hover:text-3xl group-active:text-2xl" />
+        </div>
+      </Link>
     </div>
   );
 };

@@ -74,7 +74,7 @@ const Navigation = () => {
         </li>
       </ul>
 
-      <div className="h-[1px] bg-neutral-400/50 w-full"></div>
+      <div className="h-px bg-neutral-400/50 w-full"></div>
       {/* admin only bar */}
       {user && user.role && user.role.toLowerCase() === "admin" ? (
         <ul className="flex flex-col gap-2 w-full">
@@ -118,7 +118,7 @@ const Navigation = () => {
         </a>
       </div>
 
-      <div className="h-[1px] bg-neutral-400/50 w-full"></div>
+      <div className="h-px bg-neutral-400/50 w-full"></div>
 
       <ul className="flex flex-col gap-2 w-full">
         <li className="w-full">
