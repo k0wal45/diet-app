@@ -79,7 +79,7 @@ const AddProduct = () => {
       <h2 className="text-xl font-semibold">Add your new Product</h2>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4 bg-neutral-200 rounded-xl p-4 max-w-[25rem]"
+        className="flex flex-col gap-4 bg-neutral-200 rounded-xl p-4 max-w-100"
       >
         {/* name input */}
         <div className="flex flex-col">

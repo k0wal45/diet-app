@@ -26,20 +26,12 @@ const groupDiets = (diets: Diet[]): GroupedDiet[] => {
 };
 
 const DietList = ({
-  addDiet,
   setAddDiet,
 }: {
-  addDiet: boolean;
-  setAddDiet: React.Dispatch<React.SetStateAction<boolean>>;
+  setAddDiet: React.Dispatch<React.SetStateAction<Client | boolean>>;
 }) => {
   const [showDiets, setShowDiets] = useState<number[]>([]);
   const mockGroupedDiets: GroupedDiet[] = groupDiets(mockDiets);
-
-  const onclickPlus = () => {
-    console.log("clicked");
-    setAddDiet(true);
-    console.log(addDiet);
-  };
 
   return (
     <div className="flex flex-col gap-8 w-full">
@@ -83,7 +75,7 @@ const DietList = ({
             ))}
             <div
               className="grid place-items-center bg-neutral-100 h-20 rounded-xl group hover:bg-neutral-200 duration-200 ml-4"
-              onClick={onclickPlus}
+              onClick={() => setAddDiet(item.client)}
             >
               <div className="flex gap-4">
                 <FaPlus className="text-neutral-700 text-2xl duration-200 group-hover:text-3xl group-active:text-2xl" />
