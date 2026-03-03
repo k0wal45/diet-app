@@ -44,7 +44,9 @@ const AddDiet = ({
   };
 
   return (
-    <section className="z-20 absolute w-screen h-screen top-0 left-0 place-items-center grid">
+    <section
+      className={`z-20 fixed w-screen h-screen top-0 left-0 flex flex-col justify-around items-center p-8`}
+    >
       <form
         className="w-240 rounded-xl z-10 p-4 bg-white gap-4 flex flex-col"
         onSubmit={handleSubmit}
@@ -102,7 +104,7 @@ const AddDiet = ({
           {loading ? "Adding..." : "Add Product"}
         </button>
       </form>
-      {addMeal ? <AddMeal /> : null}
+      {addMeal ? <AddMeal setAddMeal={setAddMeal} /> : null}
       <div
         className={`absolute w-screen h-screen top-0 left-0 place-items-center bg-black/50 grid`}
         onClick={() => setAddDiet(false)}

@@ -1,7 +1,12 @@
 import { Meal } from "@/lib/Types";
 import React, { useState } from "react";
+import { FaXmark } from "react-icons/fa6";
 
-const AddMeal = () => {
+const AddMeal = ({
+  setAddMeal,
+}: {
+  setAddMeal: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<Omit<Meal, "id" | "createdAt">>({
     name: "",
@@ -25,7 +30,7 @@ const AddMeal = () => {
 
   const handleInputChange = (e: React.ChangeEvent) => {
     const { name, value } = e.target as HTMLInputElement;
-    setFormData((prevData: Meal) => ({
+    setFormData((prevData: Omit<Meal, "id" | "createdAt">) => ({
       ...prevData,
       [name]: value,
     }));
@@ -33,9 +38,13 @@ const AddMeal = () => {
 
   return (
     <form
-      className="absolute w-120 bottom-0 left-1/2 -translate-x-1/2 rounded-xl z-10 p-4 bg-white border border-neutral-300 flex flex-col gap-4"
+      className="relative w-120 rounded-xl z-10 p-4 bg-white border border-neutral-300 flex flex-col gap-4 mx-auto"
       onSubmit={handleSubmit}
     >
+      <FaXmark
+        className="absolute top-4 right-4 hover:text-red-500 duration-100"
+        onClick={() => setAddMeal(false)}
+      />
       <p className="text-lg">Add Meal</p>
       <div className="flex flex-col">
         <label htmlFor="name" className="text-lg">
@@ -51,6 +60,39 @@ const AddMeal = () => {
           onChange={handleInputChange}
           className="px-4 py-2 border-2 border-neutral-400 rounded-xl active:outline-none focus:outline-none focus:ring-0"
         />
+      </div>
+      <div className="flex flex-col">
+        <label htmlFor="description" className="text-lg">
+          Description
+        </label>
+        <input
+          placeholder="Description"
+          type="text"
+          name="description"
+          id="description"
+          value={formData.description || ""}
+          required
+          onChange={handleInputChange}
+          className="px-4 py-2 border-2 border-neutral-400 rounded-xl active:outline-none focus:outline-none focus:ring-0"
+        />
+      </div>
+      <div className="grid grid-cols-4 w-full divide-x-2 divide-neutral-300 p-2 rounded-xl bg-neutral-200 ">
+        <div className="flex flex-col gap-2 items-center">
+          <p className="text-neutral-700">kcal</p>
+          <p className="text-lg">100</p>
+        </div>
+        <div className="flex flex-col gap-2 items-center">
+          <p className="text-neutral-700">Carbs</p>
+          <p className="text-lg">100g</p>
+        </div>
+        <div className="flex flex-col gap-2 items-center">
+          <p className="text-neutral-700">Protein</p>
+          <p className="text-lg">100g</p>
+        </div>
+        <div className="flex flex-col gap-2 items-center">
+          <p className="text-neutral-700">Fat</p>
+          <p className="text-lg">100g</p>
+        </div>
       </div>
       <button
         type="submit"
