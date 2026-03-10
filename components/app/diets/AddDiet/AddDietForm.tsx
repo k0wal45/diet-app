@@ -1,20 +1,27 @@
-import { Meal } from "@/lib/Types";
+"use client";
+import { Client, Diet } from "@/lib/Types";
 import React, { useState } from "react";
-import { FaXmark } from "react-icons/fa6";
+import { FaPlus } from "react-icons/fa";
+import AddMeal from "./AddMealForm";
 
-const AddMeal = ({
+const AddDietForm = ({
+  dietData,
+  setDietData,
+  loading,
+  setLoading,
+  client,
   setAddMeal,
 }: {
+  dietData: Omit<Diet, "id" | "createdAt">;
+  setDietData: React.Dispatch<
+    React.SetStateAction<Omit<Diet, "id" | "createdAt">>
+  >;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setAddDiet: React.Dispatch<React.SetStateAction<Client | boolean>>;
+  client: Client;
   setAddMeal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [formData, setFormData] = useState<Omit<Meal, "id" | "createdAt">>({
-    name: "",
-    description: "",
-    mealProducts: [],
-    dietMeals: [],
-  });
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -30,7 +37,7 @@ const AddMeal = ({
 
   const handleInputChange = (e: React.ChangeEvent) => {
     const { name, value } = e.target as HTMLInputElement;
-    setFormData((prevData: Omit<Meal, "id" | "createdAt">) => ({
+    setDietData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
@@ -38,14 +45,13 @@ const AddMeal = ({
 
   return (
     <form
-      className="relative w-120 rounded-xl z-10 p-4 bg-white border border-neutral-300 flex flex-col gap-4 mx-auto"
+      className="w-240 rounded-xl z-10 p-4 bg-white gap-4 flex flex-col"
       onSubmit={handleSubmit}
     >
-      <FaXmark
-        className="absolute top-4 right-4 hover:text-red-500 duration-100"
-        onClick={() => setAddMeal(false)}
-      />
-      <p className="text-lg">Add Meal</p>
+      <h3 className="text-xl font-semibold">
+        Add new diet for <span className="inline font-bold">{client.name}</span>
+      </h3>
+      {/* name input */}
       <div className="flex flex-col">
         <label htmlFor="name" className="text-lg">
           Name
@@ -55,7 +61,7 @@ const AddMeal = ({
           type="text"
           name="name"
           id="name"
-          value={formData.name}
+          value={dietData.name}
           required
           onChange={handleInputChange}
           className="px-4 py-2 border-2 border-neutral-400 rounded-xl active:outline-none focus:outline-none focus:ring-0"
@@ -70,38 +76,31 @@ const AddMeal = ({
           type="text"
           name="description"
           id="description"
-          value={formData.description || ""}
+          value={dietData.description}
           required
           onChange={handleInputChange}
           className="px-4 py-2 border-2 border-neutral-400 rounded-xl active:outline-none focus:outline-none focus:ring-0"
         />
       </div>
-      <div className="grid grid-cols-4 w-full divide-x-2 divide-neutral-300 p-2 rounded-xl bg-neutral-200 ">
-        <div className="flex flex-col gap-2 items-center">
-          <p className="text-neutral-700">kcal</p>
-          <p className="text-lg">100</p>
-        </div>
-        <div className="flex flex-col gap-2 items-center">
-          <p className="text-neutral-700">Carbs</p>
-          <p className="text-lg">100g</p>
-        </div>
-        <div className="flex flex-col gap-2 items-center">
-          <p className="text-neutral-700">Protein</p>
-          <p className="text-lg">100g</p>
-        </div>
-        <div className="flex flex-col gap-2 items-center">
-          <p className="text-neutral-700">Fat</p>
-          <p className="text-lg">100g</p>
+
+      <div className="flex flex-col">
+        <p className="text-lg">Meals in diet</p>
+        <div
+          className="grid place-items-center p-4 rounded-xl bg-neutral-300 hover:bg-neutral-200 duration-200 group"
+          onClick={() => setAddMeal(true)}
+        >
+          <FaPlus className="text-neutral-700 text-2xl duration-200 group-hover:text-3xl group-active:text-2xl group-hover:scale-105 group-active:scale-95" />
         </div>
       </div>
+
       <button
         type="submit"
         className="px-4 py-2 bg-primary text-lg hover:brightness-90 active:scale-95 transition-all duration-200 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? "Adding..." : "Add Product"}
+        {loading ? "Saving..." : "Save Product"}
       </button>
     </form>
   );
 };
 
-export default AddMeal;
+export default AddDietForm;

@@ -1,5 +1,5 @@
 "use client";
-import AddDiet from "@/components/app/diets/AddDiet/AddDiet";
+import AddDietWrapper from "@/components/app/diets/AddDietWrapper";
 import DietList from "@/components/app/diets/DietList";
 import { Client } from "@/lib/Types";
 import React, { useState } from "react";
@@ -12,7 +12,7 @@ const Page = () => {
       <h1 className="text-xl font-semibold">Diets</h1>
       <DietList setAddDiet={setAddDiet} />
       {addDiet && typeof addDiet !== "boolean" ? (
-        <AddDiet setAddDiet={setAddDiet} client={addDiet} />
+        <AddDietWrapper setAddDiet={setAddDiet} client={addDiet} />
       ) : null}
     </section>
   );
