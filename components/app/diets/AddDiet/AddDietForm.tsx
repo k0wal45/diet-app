@@ -1,8 +1,7 @@
 "use client";
 import { Client, Diet } from "@/lib/Types";
-import React, { useState } from "react";
+import React from "react";
 import { FaPlus } from "react-icons/fa";
-import AddMeal from "./AddMealForm";
 
 const AddDietForm = ({
   dietData,

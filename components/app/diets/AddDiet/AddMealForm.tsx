@@ -33,17 +33,22 @@ const AddMealForm = ({
     mealProducts: [],
     dietMeals: [],
   });
-
-  // Nowe stany dla wyszukiwarki i wybranych produktów
+  const [macros, setMacros] = useState({
+    kcal: 0,
+    fats: 0,
+    carbs: 0,
+    protein: 0,
+  });
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState<
-    { product: Product; weight: number }[]
+    { product: Product; weight: number | undefined }[]
   >([]);
 
   // Referencja do zamykania dropdownu po kliknięciu poza niego
   const searchRef = useRef<HTMLDivElement>(null);
 
+  // exit mechanism
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -56,6 +61,11 @@ const AddMealForm = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // macros update
+  useEffect(() => {
+    setMacros();
+  }, [formData]);
 
   // Filtrowanie produktów na podstawie wpisanego tekstu
   const filteredProducts = MOCK_PRODUCTS.filter((p) =>
@@ -75,7 +85,10 @@ const AddMealForm = ({
   };
 
   const handleWeightChange = (index: number, newWeight: string) => {
-    const weight = parseInt(newWeight) || 0;
+    // Remove leading zeros and non-digit characters
+    const sanitized = newWeight.replace(/^0+/, "").replace(/\D/g, "");
+    // If empty, set to undefined
+    const weight = sanitized ? parseInt(sanitized) : undefined;
     setSelectedProducts((prev) => {
       const updated = [...prev];
       updated[index].weight = weight;
@@ -87,7 +100,6 @@ const AddMealForm = ({
     e.preventDefault();
     setLoading(true);
     try {
-      // Tutaj logika zapisywania posiłku (formData) oraz powiązanych selectedProducts
       console.log("Saving meal with products:", selectedProducts);
     } catch (error) {
       console.error("Error adding diet:", error);
