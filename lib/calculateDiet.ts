@@ -37,7 +37,7 @@ export function calculateDiet(client: Client) {
         grams: proteinGrams,
         calories: caloriesFromProtein,
       },
-      fats: {
+      fat: {
         grams: fatGrams,
         calories: caloriesFromFat,
       },

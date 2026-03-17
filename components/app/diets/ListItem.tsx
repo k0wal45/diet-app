@@ -7,6 +7,18 @@ import { PiAvocadoBold, PiBreadBold } from "react-icons/pi";
 import { TbMeat } from "react-icons/tb";
 import MealItem from "./MealItem";
 
+const getMacroValue = (
+  mealProduct: MealProduct,
+  macroKey: "kcal" | "carbs" | "fat" | "protein",
+): number => {
+  if (!mealProduct.product) return 0;
+  const quantity =
+    mealProduct.product.unit === "SLICE"
+      ? mealProduct.quantity
+      : mealProduct.quantity / 100;
+  return mealProduct.product[macroKey] * quantity;
+};
+
 const calculateConsumedCalories = (meals: DietMeal[]) => {
   const makros = {
     kcal: 0,
@@ -21,11 +33,7 @@ const calculateConsumedCalories = (meals: DietMeal[]) => {
       Math.round(
         item.meal?.mealProducts.reduce(
           (sum: number, mealProduct: MealProduct) =>
-            sum +
-            mealProduct.product.kcal *
-              (mealProduct.product.unit === "SLICE"
-                ? mealProduct.quantity
-                : mealProduct.quantity / 100),
+            sum + getMacroValue(mealProduct, "kcal"),
           0,
         ) || 0,
       ),
@@ -37,11 +45,7 @@ const calculateConsumedCalories = (meals: DietMeal[]) => {
       Math.round(
         item.meal?.mealProducts.reduce(
           (sum: number, mealProduct: MealProduct) =>
-            sum +
-            mealProduct.product.carbs *
-              (mealProduct.product.unit === "SLICE"
-                ? mealProduct.quantity
-                : mealProduct.quantity / 100),
+            sum + getMacroValue(mealProduct, "carbs"),
           0,
         ) || 0,
       ),
@@ -54,11 +58,7 @@ const calculateConsumedCalories = (meals: DietMeal[]) => {
       Math.round(
         item.meal?.mealProducts.reduce(
           (sum: number, mealProduct: MealProduct) =>
-            sum +
-            mealProduct.product.fat *
-              (mealProduct.product.unit === "SLICE"
-                ? mealProduct.quantity
-                : mealProduct.quantity / 100),
+            sum + getMacroValue(mealProduct, "fat"),
           0,
         ) || 0,
       ),
@@ -71,11 +71,7 @@ const calculateConsumedCalories = (meals: DietMeal[]) => {
       Math.round(
         item.meal?.mealProducts.reduce(
           (sum: number, mealProduct: MealProduct) =>
-            sum +
-            mealProduct.product.protein *
-              (mealProduct.product.unit === "SLICE"
-                ? mealProduct.quantity
-                : mealProduct.quantity / 100),
+            sum + getMacroValue(mealProduct, "protein"),
           0,
         ) || 0,
       ),
@@ -170,9 +166,9 @@ const ListItem = ({ diet }: { diet: Diet }) => {
               <PiAvocadoBold className="text-4xl text-lime-600" />
             </div>
             <p className="text-lg flex items-end">
-              Fats: {caloriesConsumed.fat}
+              Fat: {caloriesConsumed.fat}
               <span className="block text-sm text-neutral-700 pb-0.5 pr-2">
-                /{caloriesGoal.macros.fats.grams}
+                /{caloriesGoal.macros.fat.grams}
               </span>
               {" g"}
             </p>

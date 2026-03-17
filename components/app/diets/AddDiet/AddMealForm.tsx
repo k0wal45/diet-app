@@ -1,21 +1,8 @@
-import { Diet, Meal } from "@/lib/Types";
+import { Diet, Meal, MealProduct, Product } from "@/lib/Types";
 import React, { useState, useRef, useEffect } from "react";
 import { FaMagnifyingGlass, FaXmark, FaTrash } from "react-icons/fa6";
-
+import { MOCK_PRODUCTS } from "@/lib/MOCK_DATA";
 // Przykładowy typ dla produktu (dostosuj do swojego z bazy danych)
-interface Product {
-  id: string;
-  name: string;
-}
-
-// Przykładowa lista produktów do wyszukiwarki
-const MOCK_PRODUCTS: Product[] = [
-  { id: "1", name: "Pierś z kurczaka" },
-  { id: "2", name: "Ryż basmati" },
-  { id: "3", name: "Awokado" },
-  { id: "4", name: "Oliwa z oliwek" },
-  { id: "5", name: "Jajka" },
-];
 
 const AddMealForm = ({
   setAddMeal,
@@ -35,14 +22,14 @@ const AddMealForm = ({
   });
   const [macros, setMacros] = useState({
     kcal: 0,
-    fats: 0,
+    fat: 0,
     carbs: 0,
     protein: 0,
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState<
-    { product: Product; weight: number | undefined }[]
+    Omit<MealProduct, "id" | "mealId">[]
   >([]);
 
   // Referencja do zamykania dropdownu po kliknięciu poza niego
@@ -64,8 +51,30 @@ const AddMealForm = ({
 
   // macros update
   useEffect(() => {
-    setMacros();
-  }, [formData]);
+    const calculateConsumedCalories = () => {
+      const macros_temp = {
+        kcal: 0,
+        fat: 0,
+        carbs: 0,
+        protein: 0,
+      };
+
+      selectedProducts.forEach((item: Omit<MealProduct, "id" | "mealId">) => {
+        if (item.product) {
+          const multiplier =
+            item.product.unit === "SLICE" ? item.quantity : item.quantity / 100;
+          macros_temp.kcal += Math.round(item.product.kcal * multiplier);
+          macros_temp.carbs += Math.round(item.product.carbs * multiplier);
+          macros_temp.protein += Math.round(item.product.protein * multiplier);
+          macros_temp.fat += Math.round(item.product.fat * multiplier);
+        }
+      });
+
+      setMacros(macros_temp);
+    };
+
+    calculateConsumedCalories();
+  }, [selectedProducts]);
 
   // Filtrowanie produktów na podstawie wpisanego tekstu
   const filteredProducts = MOCK_PRODUCTS.filter((p) =>
@@ -73,7 +82,10 @@ const AddMealForm = ({
   );
 
   const handleAddProduct = (product: Product) => {
-    setSelectedProducts((prev) => [...prev, { product, weight: 100 }]); // Domyślnie 100g
+    setSelectedProducts((prev) => [
+      ...prev,
+      { product, quantity: 100, productId: product.id },
+    ]);
     setSearchTerm("");
     setIsDropdownOpen(false);
   };
@@ -85,13 +97,16 @@ const AddMealForm = ({
   };
 
   const handleWeightChange = (index: number, newWeight: string) => {
-    // Remove leading zeros and non-digit characters
-    const sanitized = newWeight.replace(/^0+/, "").replace(/\D/g, "");
-    // If empty, set to undefined
-    const weight = sanitized ? parseInt(sanitized) : undefined;
+    // 1. Wycinamy wszystko co nie jest cyfrą
+    const sanitized = newWeight.replace(/\D/g, "");
+
+    // 2. Parsujemy na liczbę (to automatycznie usunie zera wiodące: "03" -> 3)
+    // Jeśli pole jest puste, ustawiamy 0
+    const weightAsNumber = sanitized === "" ? 0 : parseInt(sanitized, 10);
+
     setSelectedProducts((prev) => {
       const updated = [...prev];
-      updated[index].weight = weight;
+      updated[index].quantity = weightAsNumber;
       return updated;
     });
   };
@@ -166,21 +181,29 @@ const AddMealForm = ({
       <div className="grid grid-cols-4 w-full divide-x-2 divide-neutral-300 p-3 rounded-xl bg-neutral-100 mt-2">
         <div className="flex flex-col gap-1 items-center">
           <p className="text-xs text-neutral-500 uppercase font-bold">kcal</p>
-          <p className="text-lg font-semibold text-neutral-800">100</p>
+          <p className="text-lg font-semibold text-neutral-800">
+            {macros.kcal}
+          </p>
         </div>
         <div className="flex flex-col gap-1 items-center">
           <p className="text-xs text-neutral-500 uppercase font-bold">Carbs</p>
-          <p className="text-lg font-semibold text-neutral-800">100g</p>
+          <p className="text-lg font-semibold text-neutral-800">
+            {macros.carbs}g
+          </p>
         </div>
         <div className="flex flex-col gap-1 items-center">
           <p className="text-xs text-neutral-500 uppercase font-bold">
             Protein
           </p>
-          <p className="text-lg font-semibold text-neutral-800">100g</p>
+          <p className="text-lg font-semibold text-neutral-800">
+            {macros.protein}g
+          </p>
         </div>
         <div className="flex flex-col gap-1 items-center">
           <p className="text-xs text-neutral-500 uppercase font-bold">Fat</p>
-          <p className="text-lg font-semibold text-neutral-800">100g</p>
+          <p className="text-lg font-semibold text-neutral-800">
+            {macros.fat}g
+          </p>
         </div>
       </div>
 
@@ -227,34 +250,91 @@ const AddMealForm = ({
 
       {/* Lista dodanych produktów */}
       {selectedProducts.length > 0 && (
-        <div className="flex flex-col gap-2 max-h-48 overflow-y-auto pr-2">
-          {selectedProducts.map((item, index) => (
-            <div
-              key={`${item.product.id}-${index}`}
-              className="flex items-center justify-between bg-neutral-50 border border-neutral-200 p-2 rounded-lg"
-            >
-              <span className="font-medium text-neutral-700 truncate max-w-[50%]">
-                {item.product.name}
-              </span>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  min="0"
-                  value={item.weight}
-                  onChange={(e) => handleWeightChange(index, e.target.value)}
-                  className="w-20 px-2 py-1 border border-neutral-300 rounded-md text-right focus:outline-none focus:border-primary"
-                />
-                <span className="text-sm text-neutral-500">g</span>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveProduct(index)}
-                  className="p-2 text-neutral-400 hover:text-red-500 transition-colors"
+        <div className="flex flex-col gap-2 max-h-68 overflow-y-auto pr-2">
+          {selectedProducts.map(
+            (item: Omit<MealProduct, "id" | "mealId">, index) =>
+              item.product ? (
+                <div
+                  key={`${item.product.id}-${index}`}
+                  className="flex flex-col gap-2 bg-neutral-50 border border-neutral-200 p-2 rounded-lg"
                 >
-                  <FaTrash />
-                </button>
-              </div>
-            </div>
-          ))}
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-neutral-700 truncate max-w-[50%]">
+                      {item.product.name}
+                    </span>
+
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        min="0"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          handleWeightChange(index, e.target.value)
+                        }
+                        className="w-16 px-2 py-1 border border-neutral-300 rounded-md text-right focus:outline-none focus:border-primary"
+                      />
+                      <span className="text-sm text-neutral-500">g</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveProduct(index)}
+                        className="p-2 text-neutral-400 hover:text-red-500 transition-colors"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </div>
+                  <ul className="grid grid-cols-4 text-sm test-neutral-600">
+                    <li className="flex">
+                      <p>
+                        kcal:{" "}
+                        {Math.round(
+                          item.product.kcal *
+                            (item.product.unit === "SLICE"
+                              ? item.quantity
+                              : item.quantity / 100),
+                        )}
+                      </p>
+                    </li>
+                    <li className="flex">
+                      <p>
+                        carbs:{" "}
+                        {Math.round(
+                          item.product.carbs *
+                            (item.product.unit === "SLICE"
+                              ? item.quantity
+                              : item.quantity / 100),
+                        )}{" "}
+                        g
+                      </p>
+                    </li>
+                    <li className="flex">
+                      <p>
+                        protein:{" "}
+                        {Math.round(
+                          item.product.protein *
+                            (item.product.unit === "SLICE"
+                              ? item.quantity
+                              : item.quantity / 100),
+                        )}{" "}
+                        g
+                      </p>
+                    </li>
+                    <li className="flex">
+                      <p>
+                        fat:{" "}
+                        {Math.round(
+                          item.product.fat *
+                            (item.product.unit === "SLICE"
+                              ? item.quantity
+                              : item.quantity / 100),
+                        )}{" "}
+                        g
+                      </p>
+                    </li>
+                  </ul>
+                </div>
+              ) : null,
+          )}
         </div>
       )}
 

@@ -67,7 +67,7 @@ export interface MealProduct {
   mealId: number;
   productId: number;
   quantity: number; // Ilość faktycznie użyta w posiłku (np. 150g)
-  product: Product; // Zagnieżdżony produkt (Relacja)
+  product: Product | undefined; // Zagnieżdżony produkt (Relacja)
 }
 
 export interface Meal {

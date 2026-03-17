@@ -1,20 +1,23 @@
 import { Meal, MealProduct } from "@/lib/Types";
 import React from "react";
 
+const getAdjustedQuantity = (item: MealProduct): number => {
+  if (!item.product) return 0;
+  return item.product.unit === "SLICE" ? item.quantity : item.quantity / 100;
+};
+
 const calculateCalories = (meal: Meal) => {
   const makros = {
     kcal: 0,
     protein: 0,
     carbs: 0,
-    fats: 0,
+    fat: 0,
   };
 
   makros.kcal = Math.round(
     meal.mealProducts.reduce(
       (acc: number, item: MealProduct) =>
-        acc +
-        item.product.kcal *
-          (item.product.unit === "SLICE" ? item.quantity : item.quantity / 100),
+        acc + (item.product?.kcal ?? 0) * getAdjustedQuantity(item),
       0,
     ),
   );
@@ -22,9 +25,7 @@ const calculateCalories = (meal: Meal) => {
   makros.protein = Math.round(
     meal.mealProducts.reduce(
       (acc: number, item: MealProduct) =>
-        acc +
-        item.product.protein *
-          (item.product.unit === "SLICE" ? item.quantity : item.quantity / 100),
+        acc + (item.product?.protein ?? 0) * getAdjustedQuantity(item),
       0,
     ),
   );
@@ -32,19 +33,15 @@ const calculateCalories = (meal: Meal) => {
   makros.carbs = Math.round(
     meal.mealProducts.reduce(
       (acc: number, item: MealProduct) =>
-        acc +
-        item.product.carbs *
-          (item.product.unit === "SLICE" ? item.quantity : item.quantity / 100),
+        acc + (item.product?.carbs ?? 0) * getAdjustedQuantity(item),
       0,
     ),
   );
 
-  makros.fats = Math.round(
+  makros.fat = Math.round(
     meal.mealProducts.reduce(
       (acc: number, item: MealProduct) =>
-        acc +
-        item.product.fat *
-          (item.product.unit === "SLICE" ? item.quantity : item.quantity / 100),
+        acc + (item.product?.fat ?? 0) * getAdjustedQuantity(item),
       0,
     ),
   );
@@ -63,39 +60,41 @@ const MealItem = ({ meal }: { meal: Meal }) => {
       </div>
       <ul className="flex justify-between gap-4 px-4">
         <li>Protein: {makros.protein}</li>
-        <li>Fat: {makros.fats}</li>
+        <li>Fat: {makros.fat}</li>
         <li>Carb: {makros.carbs}</li>
       </ul>
 
-      {meal.mealProducts.map((product: MealProduct, index: number) => (
-        <ul
-          className={`grid grid-cols-5 p-4 ${
-            index % 2 == 0 ? "bg-neutral-50" : ""
-          }`}
-          key={product.id}
-        >
-          <li className="flex gap-1">{product.product.name}</li>
-          <li className="flex gap-1">
-            <span className="block text-neutral-600">P</span>
-            {product.product.protein}
-            <span className="block text-neutral-600">g</span>
-          </li>
-          <li className="flex gap-1">
-            <span className="block text-neutral-600">F</span>
-            {product.product.fat}
-            <span className="block text-neutral-600">g</span>
-          </li>
-          <li className="flex gap-1">
-            <span className="block text-neutral-600">C</span>
-            {product.product.carbs}
-            <span className="block text-neutral-600">g</span>
-          </li>
-          <li className="flex gap-1">
-            <span className="block text-neutral-600">kcal</span>
-            {product.product.kcal}
-          </li>
-        </ul>
-      ))}
+      {meal.mealProducts.map((product: MealProduct, index: number) =>
+        product.product ? (
+          <ul
+            className={`grid grid-cols-5 p-4 ${
+              index % 2 == 0 ? "bg-neutral-50" : ""
+            }`}
+            key={product.id}
+          >
+            <li className="flex gap-1">{product.product.name}</li>
+            <li className="flex gap-1">
+              <span className="block text-neutral-600">P</span>
+              {product.product.protein}
+              <span className="block text-neutral-600">g</span>
+            </li>
+            <li className="flex gap-1">
+              <span className="block text-neutral-600">F</span>
+              {product.product.fat}
+              <span className="block text-neutral-600">g</span>
+            </li>
+            <li className="flex gap-1">
+              <span className="block text-neutral-600">C</span>
+              {product.product.carbs}
+              <span className="block text-neutral-600">g</span>
+            </li>
+            <li className="flex gap-1">
+              <span className="block text-neutral-600">kcal</span>
+              {product.product.kcal}
+            </li>
+          </ul>
+        ) : null,
+      )}
     </div>
   );
 };
