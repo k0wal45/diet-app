@@ -1,8 +1,7 @@
 import { Diet, Meal, MealProduct, Product } from "@/lib/Types";
 import React, { useState, useRef, useEffect } from "react";
 import { FaMagnifyingGlass, FaXmark, FaTrash } from "react-icons/fa6";
-import { MOCK_PRODUCTS } from "@/lib/MOCK_DATA";
-// Przykładowy typ dla produktu (dostosuj do swojego z bazy danych)
+import fetchWithCache from "@/lib/fetchWithCache";
 
 const AddMealForm = ({
   setAddMeal,
@@ -13,6 +12,7 @@ const AddMealForm = ({
     React.SetStateAction<Omit<Diet, "id" | "createdAt">>
   >;
 }) => {
+  const [productsData, setProductsData] = useState<Product[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<Omit<Meal, "id" | "createdAt">>({
     name: "",
@@ -49,6 +49,28 @@ const AddMealForm = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchWithCache(
+          "products",
+          "/api/products/getProducts",
+        );
+
+        if (!data) {
+          throw new Error("products data is empty");
+        }
+        setProductsData(data);
+        return;
+      } catch (error) {
+        console.log(error);
+        return;
+      }
+    };
+
+    fetchData();
+  }, []);
+
   // macros update
   useEffect(() => {
     const calculateConsumedCalories = () => {
@@ -76,10 +98,10 @@ const AddMealForm = ({
     calculateConsumedCalories();
   }, [selectedProducts]);
 
-  // Filtrowanie produktów na podstawie wpisanego tekstu
-  const filteredProducts = MOCK_PRODUCTS.filter((p) =>
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredProducts =
+    productsData?.filter((p) =>
+      p.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    ) || [];
 
   const handleAddProduct = (product: Product) => {
     setSelectedProducts((prev) => [
@@ -97,11 +119,8 @@ const AddMealForm = ({
   };
 
   const handleWeightChange = (index: number, newWeight: string) => {
-    // 1. Wycinamy wszystko co nie jest cyfrą
     const sanitized = newWeight.replace(/\D/g, "");
 
-    // 2. Parsujemy na liczbę (to automatycznie usunie zera wiodące: "03" -> 3)
-    // Jeśli pole jest puste, ustawiamy 0
     const weightAsNumber = sanitized === "" ? 0 : parseInt(sanitized, 10);
 
     setSelectedProducts((prev) => {
@@ -115,7 +134,35 @@ const AddMealForm = ({
     e.preventDefault();
     setLoading(true);
     try {
-      console.log("Saving meal with products:", selectedProducts);
+      console.log(
+        `Saving meal "${formData.name}" with products:`,
+        selectedProducts,
+        "Description: " + formData.description,
+      );
+      const response = await fetch("/api/meal/addMeal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          description: formData.description,
+          mealProducts: selectedProducts,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to add meal");
+      }
+
+      console.log(data);
+
+      // setDietData((prevData) => ({
+      //   ...prevData,
+      //   meals: [...(prevData.meals || []), data],
+      // }));
     } catch (error) {
       console.error("Error adding diet:", error);
       setLoading(false);
@@ -273,7 +320,9 @@ const AddMealForm = ({
                         }
                         className="w-16 px-2 py-1 border border-neutral-300 rounded-md text-right focus:outline-none focus:border-primary"
                       />
-                      <span className="text-sm text-neutral-500">g</span>
+                      <span className="text-sm text-neutral-500">
+                        {item.product.unit === "SLICE" ? "slice" : "g"}
+                      </span>
                       <button
                         type="button"
                         onClick={() => handleRemoveProduct(index)}
