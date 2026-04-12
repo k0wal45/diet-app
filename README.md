@@ -10,4 +10,4 @@ aktualni testowi użytkownicy
 
 ## Dietician
 - **e-amil**: dietician@diet-app.com
-- **password**: password123
+- **password**: dieticianpassword
