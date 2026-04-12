@@ -82,8 +82,18 @@ const AddDietForm = ({
         />
       </div>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-2">
         <p className="text-lg">Meals in diet</p>
+        {dietData.dietMeals.length != 0
+          ? dietData.dietMeals.map((item) => (
+              <div
+                className="flex p-4 rounded-xl border border-neutral-300 justify-around"
+                key={item.id}
+              >
+                <p className="text-xl">{item.meal.name}</p>
+              </div>
+            ))
+          : null}
         <div
           className="grid place-items-center p-4 rounded-xl bg-neutral-300 hover:bg-neutral-200 duration-200 group"
           onClick={() => setAddMeal(true)}

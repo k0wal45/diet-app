@@ -32,10 +32,10 @@ const AddNewClient = () => {
         },
         body: JSON.stringify({ ...formData, trainerId }),
       });
-      if (!response.ok) {
-        throw new Error("Failed to add client");
-      }
       const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.body || "Failed to add client");
+      }
       console.log("Client added successfully:", data);
     } catch (error) {
       console.error("Error adding client:", error);

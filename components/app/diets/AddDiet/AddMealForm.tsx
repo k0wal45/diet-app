@@ -1,4 +1,4 @@
-import { Diet, Meal, MealProduct, Product } from "@/lib/Types";
+import { Diet, DietMeal, Meal, MealProduct, Product } from "@/lib/Types";
 import React, { useState, useRef, useEffect } from "react";
 import { FaMagnifyingGlass, FaXmark, FaTrash } from "react-icons/fa6";
 import fetchWithCache from "@/lib/fetchWithCache";
@@ -157,12 +157,20 @@ const AddMealForm = ({
         throw new Error(data.message || "Failed to add meal");
       }
 
-      console.log(data);
+      const newDietMeal: Omit<DietMeal, "id" | "dietId"> = {
+        mealId: data.newMeal.id,
+        meal: data.newMeal,
+      };
 
-      // setDietData((prevData) => ({
-      //   ...prevData,
-      //   meals: [...(prevData.meals || []), data],
-      // }));
+      setDietData(
+        (prevData) =>
+          ({
+            ...prevData,
+            dietMeals: [...(prevData.dietMeals || []), newDietMeal],
+          }) as Omit<Diet, "id" | "createdAt">,
+      );
+
+      setAddMeal(false);
     } catch (error) {
       console.error("Error adding diet:", error);
       setLoading(false);

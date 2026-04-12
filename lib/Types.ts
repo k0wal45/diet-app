@@ -91,7 +91,6 @@ export interface Diet {
   name: string;
   description?: string;
   saved: boolean;
-  // Pola makro usunięte - będą liczone dynamicznie w UI na podstawie klienta lub posiłków
   createdAt: string;
   clientId: number;
   client: Client;
